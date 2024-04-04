@@ -20,8 +20,9 @@
           <div class="list-list-item-bottom-item">
             <span class="list-list-item-option-done" v-if="item.isDone">설문 대상</span>
             <span class="list-list-item-option" v-else>설문 대상</span>
-            <span class="text-done" v-if="item.isDone">{{item.tarInput}}</span>
-            <span v-else>{{item.tarInput}}</span>
+            <span class="text-done" v-if="item.tarInput == null">모두</span>
+            <span class="text-done" v-else-if="item.tarInput.length > 15">{{item.tarInput.substring(0,15)}}...</span>
+            <span class="text-done" v-else>{{item.tarInput}}</span>
           </div>
           <div class="list-list-item-bottom-item">
             <span class="list-list-item-option-done" v-if="item.isDone">응답수</span>
