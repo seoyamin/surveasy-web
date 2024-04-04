@@ -14,7 +14,7 @@
         <span class="title-mid">패널수</span>
       </div>
       <div class="statics-item">
-        <span class="title-bold">000점</span>
+        <span class="title-bold">4.7점</span>
         <span class="title-mid">만족도</span>
       </div>
     </div>
