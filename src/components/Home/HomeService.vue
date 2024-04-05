@@ -17,7 +17,7 @@
         <div class="item-title">인터뷰이 모집</div>
         <div class="item-content">원하는 인터뷰이를<br>원하는 일정에 맞게 구해드려요.</div>
         <div class="content-btn-container">
-          <button class="item-btn" @click="temp">이용하러 가기</button>
+          <a href="https://surveasy.oopy.io/interviewservice" class="item-btn" target="blank">이용하러 가기</a>
         </div>
       </div>
       <div class="home-content">
@@ -37,11 +37,6 @@
 
 <script>
 export default {
-  methods : {
-    temp(){
-      alert("서비스 준비 중입니다.")
-    }
-  }
 }
 </script>
 
