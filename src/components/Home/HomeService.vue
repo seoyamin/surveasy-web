@@ -23,7 +23,7 @@
       <div class="home-content">
         <img src="@/assets/home/beta.png" width="15" height="20" class="item-img">
         <div class="item-title">베타테스터 모집</div>
-        <div class="item-content">정식 출시에 앞서,<br>베타테스터를 모집해 오류를 확인하세요!</div>
+        <div class="item-content">정식 출시에 앞서, 베타테스터를<br> 모집해 오류를 확인하세요!</div>
         <div class="content-btn-container">
           <a href="https://surveasy.oopy.io/betaservice" class="item-btn" target="blank">이용하러 가기</a>
         </div>

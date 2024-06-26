@@ -86,6 +86,36 @@ export default {
                     const userEmail = this.$store.state.currentUser.email
                     const docSnap = await getDoc(doc(db, "userData", userEmail.toString()))
                     console.log(pointAdd)
+
+                    const botId = "5505316703:AAGLByXDGZ0pE4n4-sAtU1SZW8GNgMs6dtE";
+                    // const chatId = "5620110827";
+                    const chatIds = ["5620110827", "5792894818", "5551257956"]
+                    const dueDateString = store.state.surveyOption.endDate + " " +store.state.surveyOption.endTime;
+                    for (let i = 0; i < chatIds.length; i++) {
+                                        try {
+                        await axios.post(
+                            `https://api.telegram.org/bot${botId}/sendMessage`,
+                            {
+                                chat_id: chatIds[i],
+                                text: 
+                                ` 설문 등록됨
+제목 : ${obj.title},
+마감기한 : ${dueDateString},
+요구인원 : ${obj.headCount},
+소요시간 : ${obj.spendTime},
+타겟성별 : ${obj.targetGender},
+링크 : ${obj.link},
+                                `
+                            }
+                        
+                        )
+                    } catch (error) {
+                    console.log(error)
+                    }
+                    }
+
+
+
                     if(docSnap.exists()){
                         const data = docSnap.data()
                         const now = data.point_current
