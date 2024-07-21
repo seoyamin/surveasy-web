@@ -19,6 +19,9 @@
         <div class="content-gray">
           <a href="https://surveasy.oopy.io/terms-of-use" target="_blank" class="content-link">이용약관</a> | <a href="https://surveasy.oopy.io/privacy-policy" target="_blank" class="content-link">개인정보처리방침</a>
         </div>
+        <div class="content-gray">
+          <div class="content-gray">통신판매업신고번호 : 제 2024-서울성동-1276호</div>
+        </div>
       </div>
     </div>
   </div>
