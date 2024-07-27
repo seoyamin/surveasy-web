@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ServiceDone />
+    <ServicePay />
 
   </div>
 </template>
