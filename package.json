@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@tosspayments/tosspayments-sdk": "^2.2.4",
     "axios": "^1.4.0",
     "core-js": "^3.8.3",
     "firebase": "^9.23.0",

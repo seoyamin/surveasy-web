@@ -1,19 +1,6 @@
 <template>
     <div class="pay-info-container">
-        <div class="input-title">결제 방법</div>
-        <div class="option-border"></div>
-        <div class="pay-info-title">입금 계좌<br>
-            카카오뱅크 3333-11-5235460 (송다예)</div>
-        <input class="info-input" v-model="this.accountName" type="text" placeholder="입금자명" required>
-        <div class="icon-container">
-        <div class="icon" @mouseover="showInfo" @mouseleave="hideInfo">
-          <img src="@/assets/service/question.png" width="20" class="item-img">
-        </div>
-        <div v-if="isInfoVisible" class="info-box">
-          카드 결제와 관련된 문의는 입금자명에 본인 성함 작성하여 '결제하기' 버튼 클릭 후 문의 채널로 문의 주세요!
-        </div>
-      </div>
-        <div><button class="pay-btn" @click="uploadSurvey">결제하기</button></div>
+        <div><button class="pay-btn" @click="goPayment">결제하기</button></div>
     </div>
 </template>
 
@@ -23,23 +10,18 @@ import store from '@/store'
 import { updateDoc, getDoc, doc, getFirestore } from 'firebase/firestore';
 
 export default {
-    data(){
-        return{
-            accountName : '',
-            isInfoVisible: false,
-        }
-    },
+    
     methods:{
-        showInfo() {
-            this.isInfoVisible = true;
-        },
-        hideInfo() {
-            this.isInfoVisible = false;
-        },
+
+        goPayment(){
+            this.$router.push("/service/payment")
+        },  
+        
+        // TODO : edit
         async uploadSurvey() {
             const obj = store.state.surveyOption
             
-            if(obj.title == '' || obj.institute == '' || obj.link == '' || this.accountName == ''){
+            if(obj.title == '' || obj.institute == '' || obj.link == ''){
                 alert("필수 항목을 모두 입력해주세요.")
             } else if (!this.$store.state.isLoggedIn) {
                 alert("로그인이 필요합니다.")
@@ -106,10 +88,7 @@ export default {
     flex-direction: column;
     font-family: 'Noto Sans KR', sans-serif;
     margin: 30px;
-    padding: 20px;
-    padding-left: 30px;
-    background-color: #fafafa;
-    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+    
 }
 
 .pay-info-container .info-input {
