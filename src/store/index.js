@@ -5,8 +5,8 @@ import createPersistedState from 'vuex-persistedstate'
 // state, getters, mutations, actions, modules
 export default createStore({
   state: {
-    isLoggedIn : false,
-    currentUser : null,
+    isLoggedIn : false, // X
+    currentUser : null, // X
     tables : {
       priceTextTable: [
           ['', '30명', '40명', '50명', '60명', '70명', '80명', '90명', '100명', '120명', '140명', '160명', '180명', '200명'],
@@ -56,6 +56,7 @@ export default createStore({
       }
     },
 
+    // account name 필요없음
     surveyOption : {
       headCount : "",
       spendTime : "",
@@ -79,6 +80,8 @@ export default createStore({
       accountName : '',
       description : ''
     },
+
+    // X
     firebaseAuthErrorMsg : {
       "auth/wrong-password" : "비밀번호가 맞지 않습니다.",
       "auth/user-not-found" : "가입되어 있지 않은 이메일입니다.",
@@ -87,11 +90,13 @@ export default createStore({
   },
 
   mutations: {
+    // X
     setCurrentUserMutation(state, payload) {
       state.currentUser = payload
       console.log(state.currentUser)
       state.isLoggedIn = true
     },
+    // X
     logoutMutation(state) {
       console.log('logoutMutation')
       state.currentUser = null
@@ -123,6 +128,7 @@ export default createStore({
       state.surveyOption.coupon = payload.coupon,
       state.surveyOption.point = payload.point
     },
+    // X
     saveAccountName (state, payload){
       state.surveyOption.accountName = payload.accountName
     }

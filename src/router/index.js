@@ -9,6 +9,7 @@ import JoinDone from '../views/Join/JoinDone'
 import Service from '../views/Service/Service'
 import ServiceInputForm from '../views/Service/ServiceInputForm'
 import ServicePayDone from '../views/Service/ServicePayDone'
+import ServicePayFail from '../views/Service/ServicePayFail'
 import ServicePayment from '../views/Service/ServicePayment'
 import List from '../views/List/List'
 import KnowHow from '../views/KnowHow/KnowHow'
@@ -77,6 +78,11 @@ const routes = [
     path: '/service/paydone',
     name: 'ServicePayDone',
     component: ServicePayDone
+  },
+  {
+    path: '/service/payfail',
+    name: 'ServicePayFail',
+    component: ServicePayFail
   },
   {
     path: '/list',
