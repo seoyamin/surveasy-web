@@ -19,7 +19,8 @@
 </template>
 
 <script>
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
+import { instance } from '../../api/index'
+import VueCookies from "vue-cookies"
 export default {
   data() {
     return {
@@ -28,23 +29,36 @@ export default {
     }
   },
 
+  
   methods: {
-    logIn() {
-      const auth = getAuth();
-      signInWithEmailAndPassword(auth, this.email, this.password)
-        .then((userCredential) => {
-          const user = userCredential.user
-          this.$store.dispatch('setCurrentUser', {
-            payload: auth.currentUser.email
-          })
-          console.log(this.$store.currentUser)
-          this.$router.push('/')
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMsg = error.message;
-          alert(this.$store.state.firebaseAuthErrorMsg[errorCode])
-        })
+    async logIn() {
+      if(this.email == '') {
+        alert('이메일을 입력하세요')
+        return
+      } 
+
+      else if(this.password == '') {
+        alert('비밀번호를 입력하세요')
+        return
+      }
+
+      else {
+        try {
+          const response = await instance.post(
+            '/user/signin',
+            {
+              email: this.email,
+              password: this.password
+            }
+          )
+          localStorage.setItem("access_token", response.data.accessToken)
+          VueCookies.set("refresh_token", response.data.refreshToken)
+          this.$router.go("/")
+        } catch (error) {
+          alert(error)
+          console.log(error)
+        }
+      }
     }
   }
 }
