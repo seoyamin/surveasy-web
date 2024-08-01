@@ -53,7 +53,7 @@ export default {
           )
           localStorage.setItem("access_token", response.data.accessToken)
           VueCookies.set("refresh_token", response.data.refreshToken)
-          this.$router.go("/")
+          this.$router.go("/#")
         } catch (error) {
           alert(error)
           console.log(error)
