@@ -5,35 +5,36 @@
     </div>
 
     <div class="mypage-myinfo-main-container">
-      <div id="mypage-myinfo-title-green">회원 정보</div>
       <div class="mypage-myinfo-main-row">
         <div class="mypage-myinfo-option">이메일</div>
-        <div class="mypage-myinfo-value">{{this.$store.state.currentUser.email}}</div>
+        <div class="mypage-myinfo-value">{{ this.myInfo.email }}</div>
       </div>
       <div class="mypage-myinfo-main-row">
         <div class="mypage-myinfo-option">이름</div>
-        <div class="mypage-myinfo-value">{{this.$store.state.currentUser.name}}</div>
+        <div class="mypage-myinfo-value">{{ this.myInfo.name }}</div>
       </div>
       <div class="mypage-myinfo-main-row">
         <div class="mypage-myinfo-option">휴대폰 번호</div>
-        <div class="mypage-myinfo-value">{{this.$store.state.currentUser.phoneNumber}}</div>
+        <div class="mypage-myinfo-value">{{ this.formattedPhone }}</div>
       </div>
       <div class="mypage-myinfo-main-row">
-        <div class="mypage-myinfo-option">생년월일</div>
-        <div class="mypage-myinfo-value">{{this.$store.state.currentUser.birth}}</div>
-      </div>
-      <div class="mypage-myinfo-main-row">
-        <div class="mypage-myinfo-option">할인 대상</div>
-        <div class="mypage-myinfo-value">{{this.$store.state.currentUser.identity}}</div>
+        <div class="mypage-myinfo-option">적립금</div>
+        <div class="mypage-myinfo-value">{{ this.formattedAmount }}원</div>
       </div>
 
-      <div class="mypage-myinfo-main-line-container"><div class="mypage-myinfo-main-line"></div></div>
 
-      <div class="mypage-myinfo-notice-container">
-        <span class="mypage-myinfo-notice">* 회원 정보 수정을 원하실 경우</span>
-        <span class="mypage-myinfo-notice" id="green">서베이지 카카오톡 채널</span>
+      
+    </div>
+
+    <div class="mypage-point-notice-container">
+      <div class="mypage-point-notice">
+        <span class="mypage-myinfo-notice">• 회원 정보 수정을 원하실 경우</span>
+        <span class="mypage-myinfo-notice" id="green"> 서베이지 카카오톡 채널</span>
         <span class="mypage-myinfo-notice">로 문의 바랍니다.</span>
       </div>
+      <div class="mypage-point-notice">• 적립금은 서비스 이용 금액의 3%가 적립됩니다.</div>
+      <div class="mypage-point-notice">• 후기 작성 시 적립금 500원이 추가 지급됩니다.</div>
+      <div class="mypage-point-notice">• 적립금은 결제 금액이 10,000원 이상일 때만 사용 가능하며, 서비스 금액의 10%까지만 사용할 수 있습니다.</div>
     </div>
 
     
@@ -41,7 +42,44 @@
 </template>
 
 <script>
+import { instanceWithAuth } from '../../../api/index'
 export default {
+  data(){
+    return{
+      myInfo : {}
+    }
+  },
+
+  computed : {
+    formattedPhone(){
+      const cleaned = ('' + this.myInfo.phoneNumber).replace(/\D/g, '')
+      const match = cleaned.match(/^(\d{3})(\d{3,4})(\d{4})$/)
+      if (match) {
+        return `${match[1]}-${match[2]}-${match[3]}`
+      }
+      return this.myInfo.phoneNumber
+    },
+    formattedAmount() {
+      const amount = parseFloat(this.myInfo.point)
+      if (isNaN(amount)) {
+        return this.myInfo.point
+      }
+      return this.myInfo.point.toLocaleString('en-US')
+    }
+
+  },
+
+  mounted(){
+    this.getUserInfo()
+  },
+
+  methods : {
+    async getUserInfo(){
+      const response = await instanceWithAuth.get("/user")
+      this.myInfo = response.data
+    }
+  }
+
 }
 </script>
 
@@ -111,5 +149,18 @@ export default {
 }
 #green {
   color: #0AAC00;
+}
+
+.mypage-point-notice-container {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  width: 85%;
+  margin: 20px auto;
+}
+.mypage-point-notice {
+  margin-bottom: 5px;
+  color: #757272;
+  font-size: 12px;
 }
 </style>

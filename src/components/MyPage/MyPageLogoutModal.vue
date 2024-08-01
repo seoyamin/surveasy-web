@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import VueCookies from "vue-cookies"
 export default {
   props: {
     logoutModal: {
@@ -25,8 +26,9 @@ export default {
   },
   methods: {
     logout() {
-      console.log('closeLogoutModal')
-      this.$store.dispatch('logout')
+      VueCookies.remove("refresh_token")
+      localStorage.removeItem("access_token")
+      this.$router.go("/#")
     }
   }
 }
