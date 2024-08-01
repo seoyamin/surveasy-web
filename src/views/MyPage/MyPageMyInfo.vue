@@ -3,24 +3,18 @@
     <h1>마이페이지</h1>
     <MyPageNavigatorVue />
     <MyPageMyInfoVue />
-    <MyPageMyInfoMarketingVue />
-    <MyPagePointVue />
   </div>
 </template>
 
 <script>
 import MyPageNavigatorVue from '@/components/MyPage/MyPageNavigator.vue'
 import MyPageMyInfoVue from '@/components/MyPage/MyPageMyInfo/MyPageMyInfo.vue'
-import MyPageMyInfoMarketingVue from '@/components/MyPage/MyPageMyInfo/MyPageMyInfoMarketing.vue'
-import MyPagePointVue from '@/components/MyPage/MyPagePoint/MyPagePoint.vue'
 
 export default {
   name: 'MyPageMyInfo',
   components: {
     MyPageMyInfoVue,
-    MyPageMyInfoMarketingVue,
     MyPageNavigatorVue,
-    MyPagePointVue
   },
   mounted() {
     window.scrollTo(0,0)
