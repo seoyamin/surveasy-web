@@ -28,7 +28,8 @@ export default {
     logout() {
       VueCookies.remove("refresh_token")
       localStorage.removeItem("access_token")
-      this.$router.go("/#")
+      this.$router.push("/")
+      this.$router.go()
     }
   }
 }

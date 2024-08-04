@@ -38,11 +38,11 @@
               <label for="kakaotalk">카카오톡 단톡방</label> 
             </div>
             <div class="join-input-inflow-item">
-              <input type="radio" name="from" id="google" value="google" v-model="dataSet.inflow">
+              <input type="radio" name="from" id="google" value="GOOGLE" v-model="dataSet.inflow">
               <label for="google">구글 검색</label> 
             </div>
             <div class="join-input-inflow-item">
-              <input type="radio" name="from" id="naver" value="naver" v-model="dataSet.inflow">
+              <input type="radio" name="from" id="naver" value="NAVER_SEARCH" v-model="dataSet.inflow">
               <label for="naver">네이버 검색</label> 
             </div>
             <div class="join-input-inflow-item">
@@ -57,23 +57,23 @@
 
           <div class="join-input-inflow-col-item">
             <div class="join-input-inflow-item">
-              <input type="radio" name="from" id="blog" value="blog" v-model="dataSet.inflow">
+              <input type="radio" name="from" id="blog" value="NAVER_BLOG" v-model="dataSet.inflow">
               <label for="everytime">네이버 블로그</label> 
             </div>
             <div class="join-input-inflow-item">
-              <input type="radio" name="from" id="지식in" value="지식in" v-model="dataSet.inflow">
+              <input type="radio" name="from" id="지식in" value="NAVER_IN" v-model="dataSet.inflow">
               <label for="지식in">네이버 지식인</label> 
             </div>
             <div class="join-input-inflow-item">
-              <input type="radio" name="from" id="cafe" value="cafe" v-model="dataSet.inflow">
+              <input type="radio" name="from" id="cafe" value="NAVER_CAFE" v-model="dataSet.inflow">
               <label for="cafe">네이버 카페</label> 
             </div>
             <div class="join-input-inflow-item">
-              <input type="radio" name="from" id="email" value="email" v-model="dataSet.inflow">
+              <input type="radio" name="from" id="email" value="AD_EMAIL" v-model="dataSet.inflow">
               <label for="e-mail">이메일 홍보</label> 
             </div>
             <div class="join-input-inflow-item">
-              <input type="radio" name="from" id="offline" value="offline" v-model="dataSet.inflow">
+              <input type="radio" name="from" id="offline" value="AD_OFFLINE" v-model="dataSet.inflow">
               <label for="offline">오프라인 홍보</label> 
             </div>
             <div class="join-input-inflow-item">
