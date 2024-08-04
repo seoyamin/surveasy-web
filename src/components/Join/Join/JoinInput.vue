@@ -24,64 +24,60 @@
         <label>휴대폰 번호*</label>
         <input type="tel" id="phone" placeholder="- 없이 입력해주세요" v-model="dataSet.phoneNumber" @change="validatePhoneNumber(dataSet.phoneNumber)">
       </div>
-      <div class="join-input-form-item">
-        <label>생년월일*</label>
-        <input type="num" id="birth" placeholder="ex. 20220101" v-model="dataSet.birth" @change="validateBirthDate(dataSet.birth)">
-      </div>
 
       <div class="join-input-form-item">
         <label>가입경로*</label>
         <div class="join-input-inflow-col-container">
           <div class="join-input-inflow-col-item">
             <div class="join-input-inflow-item">
-              <input type="radio" name="from" id="everytime" value="everytime" v-model="dataSet.funnel">
+              <input type="radio" name="from" id="everytime" value="EVERYTIME" v-model="dataSet.inflow">
               <label for="everytime">에브리타임</label> 
             </div>
             <div class="join-input-inflow-item">
-              <input type="radio" name="from" id="kakaotalk" value="kakaotalk" v-model="dataSet.funnel">
+              <input type="radio" name="from" id="kakaotalk" value="KAKAO" v-model="dataSet.inflow">
               <label for="kakaotalk">카카오톡 단톡방</label> 
             </div>
             <div class="join-input-inflow-item">
-              <input type="radio" name="from" id="google" value="google" v-model="dataSet.funnel">
+              <input type="radio" name="from" id="google" value="GOOGLE" v-model="dataSet.inflow">
               <label for="google">구글 검색</label> 
             </div>
             <div class="join-input-inflow-item">
-              <input type="radio" name="from" id="naver" value="naver" v-model="dataSet.funnel">
+              <input type="radio" name="from" id="naver" value="NAVER_SEARCH" v-model="dataSet.inflow">
               <label for="naver">네이버 검색</label> 
             </div>
             <div class="join-input-inflow-item">
-              <input type="radio" name="from" id="instagram" value="instagram" v-model="dataSet.funnel">
+              <input type="radio" name="from" id="instagram" value="INSTAGRAM" v-model="dataSet.inflow">
               <label for="instagram">인스타그램</label> 
             </div>
             <div class="join-input-inflow-item">
-              <input type="radio" name="from" id="etc" value="etc" v-model="dataSet.funnel">
+              <input type="radio" name="from" id="etc" value="ETC" v-model="dataSet.inflow">
               <label for="etc">기타</label> 
             </div>
           </div>
 
           <div class="join-input-inflow-col-item">
             <div class="join-input-inflow-item">
-              <input type="radio" name="from" id="blog" value="blog" v-model="dataSet.funnel">
+              <input type="radio" name="from" id="blog" value="NAVER_BLOG" v-model="dataSet.inflow">
               <label for="everytime">네이버 블로그</label> 
             </div>
             <div class="join-input-inflow-item">
-              <input type="radio" name="from" id="지식in" value="지식in" v-model="dataSet.funnel">
+              <input type="radio" name="from" id="지식in" value="NAVER_IN" v-model="dataSet.inflow">
               <label for="지식in">네이버 지식인</label> 
             </div>
             <div class="join-input-inflow-item">
-              <input type="radio" name="from" id="cafe" value="cafe" v-model="dataSet.funnel">
+              <input type="radio" name="from" id="cafe" value="NAVER_CAFE" v-model="dataSet.inflow">
               <label for="cafe">네이버 카페</label> 
             </div>
             <div class="join-input-inflow-item">
-              <input type="radio" name="from" id="email" value="email" v-model="dataSet.funnel">
+              <input type="radio" name="from" id="email" value="AD_EMAIL" v-model="dataSet.inflow">
               <label for="e-mail">이메일 홍보</label> 
             </div>
             <div class="join-input-inflow-item">
-              <input type="radio" name="from" id="offline" value="offline" v-model="dataSet.funnel">
+              <input type="radio" name="from" id="offline" value="AD_OFFLINE" v-model="dataSet.inflow">
               <label for="offline">오프라인 홍보</label> 
             </div>
             <div class="join-input-inflow-item">
-              <input type="radio" name="from" id="acquaintance" value="acquaintance" v-model="dataSet.funnel">
+              <input type="radio" name="from" id="acquaintance" value="ACQUAINTANCE" v-model="dataSet.inflow">
               <label for="acquaintance">지인 추천</label> 
             </div>
           </div>
@@ -90,7 +86,7 @@
 
       <div class="join-input-form-item">
         <label>상세 가입경로*</label>
-        <input type="text" id="inflow-detail" placeholder="해당 가입경로에 대한 상세 내용을 작성해주세요" v-model="dataSet.funnel_detail">
+        <input type="text" id="inflow-detail" placeholder="해당 가입경로에 대한 상세 내용을 작성해주세요" v-model="dataSet.inflow_detail">
         <span>* 검색 유입인 경우 검색어, 에브리타임/카카오톡/네이버 카페인 경우 소속을 알려주세요.</span>
       </div>
 
@@ -123,14 +119,14 @@
     </div>
     
     <div class="join-input-button-container">
-      <button id="btn-join" @click="signUp(dataSet)">회원가입하기</button>
+      <button id="btn-join" @click="signUp">회원가입하기</button>
     </div>
   </div>
 </template>
 
 <script>
-import { getAuth,  createUserWithEmailAndPassword } from 'firebase/auth'
-import { setDoc, doc, getFirestore } from 'firebase/firestore';
+import { instance } from '../../../api/index'
+
 export default {
   data(){
     return{
@@ -140,9 +136,8 @@ export default {
           passCheck:null,
           phoneNumber:null,
           name:null,
-          funnel:null,
-          funnel_detail:null,
-          birth:null,
+          inflow:null,
+          inflow_detail:null,
           check1: false,
           check2: false,
           check3: false,
@@ -188,10 +183,6 @@ export default {
       this.validPhoneNumber = (phoneNumber.length >= 11 && isNaN(phoneNumber) == false)
     },
 
-    validateBirthDate(date) {
-      this.validBirthDate = ((date.length == 8) && date < 20230000)
-    },
-
     validateSignUp(dataSet) {
       var errCode = [];
       if (this.hasNullOption(dataSet)) {
@@ -206,10 +197,6 @@ export default {
         // if((dataSet.phoneNumber).length<11 || isNaN(dataSet.phoneNumber)==true || (dataSet.phoneNumber).includes('.')==true){
           errCode.push(4)
         }
-        if(!this.validBirthDate){
-        // if((dataSet.birth).length<8 || dataSet.birth>=20220000){
-          errCode.push(5)
-        }
         if(!(dataSet.check1 ==true && dataSet.check2 ==true && dataSet.check3 ==true)){
           errCode.push(6)
         }
@@ -223,7 +210,7 @@ export default {
           "비밀번호를 확인해주세요.",
           "비밀번호는 8자 이상이여야 합니다.",
           "휴대폰 번호를 올바르게 입력하세요.",
-          "생년월일을 올바르게 입력하세요.",
+          "",
           "약관에 동의해주세요."
           ]
           var errAlert =[]
@@ -243,61 +230,42 @@ export default {
     },
 
     hasNullOption(dataSet) {
-      if (dataSet.email == null || dataSet.password == null || dataSet.passCheck == null || dataSet.phoneNumber == null || dataSet.name == null || dataSet.funnel == null || dataSet.funnel_detail == null || dataSet.funnel_detail == "") {
+      if (dataSet.email == null || dataSet.password == null || dataSet.passCheck == null || dataSet.phoneNumber == null || dataSet.name == null || dataSet.inflow == null || dataSet.inflow_detail == null || dataSet.inflow_detail == "") {
         return true
       } else {
         return false
       }
     },
 
-    signUp(data) {
-      const validResult = this.validateSignUp(data);
+    async signUp() {
+      const validResult = this.validateSignUp(this.dataSet);
+      
       if (validResult) {
-        const auth = getAuth();
-        createUserWithEmailAndPassword(auth, data.email, data.password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          this.$router.push('/login')
-          this.createFirebaseUserData(data);
-        })
-        .catch((error) => {
-          const errcode = error.code;
-          if(error.code=="auth/email-already-in-use") {
-              this.error = "이미 가입된 계정입니다."
-              alert(this.error)
+        try {
+          const response = await instance.post(
+            '/user/signup',
+            {
+              email: this.dataSet.email,
+              password: this.dataSet.password,
+              name : this.dataSet.name,
+              phoneNumber : this.dataSet.phoneNumber,
+              inflowPath : this.dataSet.inflow,
+              inflowPathDetail : this.dataSet.inflow_detail
+            }
+          )
+          if(response.status == 200) {
+            console.log(response.data)
+            this.$router.push('/login')
+          }else{
+            console.log(response.data)
           }
-          if(error.code=="auth/invalid-email") {
-              this.error = "이메일 형식이 맞는지 확인해주세요."
-              alert(this.error)
-          }
-        })
-      } else {
+        }catch(error){
+          console.log(error)
+        }
       }
     },
 
-    async createFirebaseUserData(data) {
-      const db = getFirestore()
-      await setDoc(doc(db, "userData",data.email.toString()), {
-        name: data.name,
-        email: data.email,
-        phoneNumber: data.phoneNumber,
-        isPanel: false,
-        birth: data.birth,
-        uploadIndex: [],
-        identity: '할인 대상이 아닙니다.',
-        identity_request: false,
-        identity_responded: false,
-        funnel : data.funnel,
-        funnel_detail : data.funnel_detail,
-        respondArray: [],
-        clientGrade: 0,
-        point_total : 0,
-        point_current: 0,
-        marketingSMS: false,
-        marketingEmail: false
-      });
-      
-    }
+
   }
 }
 </script>
