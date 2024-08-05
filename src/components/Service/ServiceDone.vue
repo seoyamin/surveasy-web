@@ -1,5 +1,5 @@
 <template>
-  <div class="service-done-container">
+  <div class="service-done-container" v-if="!isFailed">
     <div class="done-img">
       <img src="@/assets/check.png" alt="check" width="75">
     </div>
@@ -12,23 +12,64 @@
       <router-link to="/mypage" class="pay-btn">마이페이지 가기</router-link>
     </div>
   </div>
+  <div class="service-fail-container" v-else>
+    주문에 실패했습니다. 다시 시도해주세요.
+  </div>
 </template>
 
 <script>
 import store from '@/store'
+import { instanceWithAuth } from '@/api';
 export default {
+  data() {
+    return {
+      isFailed : false
+    }
+  },
   mounted(){
     this.getPaymentKey()
   },
 
   methods : {
-    getPaymentKey(){
+    async getPaymentKey(){
+      const obj = store.state.surveyOption
       const urlParams = new URLSearchParams(window.location.search);
       const paymentKey = urlParams.get("paymentKey");
       const orderId = urlParams.get("orderId");
       const amount = urlParams.get("amount");
-      // 서버에 POST 
-      console.log(paymentKey, orderId, amount)
+      console.log(obj)
+
+      const pointAdd = Math.floor((obj.price - (obj.point + obj.coupon))*0.03)
+      try {
+        const response = await instanceWithAuth.post('/survey', {
+          headCount: obj.headCount,
+          spendTime: obj.spendTime,
+          dueDate: new Date(store.state.surveyOption.endDate + "T" + store.state.surveyOption.endTime + "Z"),
+          targetGender: obj.targetGender,
+          targetAgeList: obj.targetAge,
+          language: obj.language,
+          identity: obj.identity,
+          title: obj.title,
+          targetInput: obj.targetInput,
+          institute: obj.institute,
+          link: obj.link,
+          description: obj.description,
+          notice: obj.notice,
+          paymentInfo : {
+            priceDiscounted: obj.priceDiscounted,
+            pointAdd: pointAdd,
+            paymentKey : paymentKey,
+            orderId : orderId,
+            price: amount
+          }
+        })
+        if(response.data.status != 200){
+          this.isFailed = true
+        }
+      } catch(error){
+        this.isFailed = true
+        console.log(error)
+      }
 
     }
   }

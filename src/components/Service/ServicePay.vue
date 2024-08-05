@@ -10,12 +10,19 @@
 </template>
 
 <script>
-import { loadTossPayments } from "@tosspayments/tosspayments-sdk";
+import { instanceWithAuth } from '../../api/index'
+import { loadTossPayments } from "@tosspayments/tosspayments-sdk"
+import store from '@/store'
 export default {
     data(){
         return {
             widgets : null,
             orderId : "",
+            user : {
+                email : "",
+                name : "",
+                phone : ""
+            }
         }
     },
     mounted() {
@@ -23,6 +30,7 @@ export default {
     },
     methods: {
         async renderPaymentUi(){
+            const obj = store.state.surveyOption
             const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm"
             const customerKey = "Fc5l3BxAaNjBPVTihRi8V"
             const tossPayments = await loadTossPayments(clientKey)
@@ -31,7 +39,7 @@ export default {
             })
             await this.widgets.setAmount({
                 currency: "KRW",
-                value: 100,
+                value: obj.price - (obj.point + obj.coupon),
             });
             await this.widgets.renderPaymentMethods({
                 selector : "#payment-method",
@@ -41,16 +49,39 @@ export default {
         },
 
         async requestPayment(){
-            this.createOrderId()
-            await this.widgets.requestPayment({
-            orderId: this.orderId,
-            orderName: "토스 티셔츠 외 2건",
-            successUrl: window.location.origin + "/#/service/paydone",
-            failUrl: window.location.origin + "/fail.html",
-            customerEmail: "customer123@gmail.com",
-            customerName: "김토스",
-            customerMobilePhone: "01012341234",
-          });
+            const obj = store.state.surveyOption
+            try {
+                const response = await instanceWithAuth.get("/user")
+                if(response.status == 200){
+                    this.createOrderId()
+                    await this.widgets.requestPayment({
+                        orderId: this.orderId,
+                        orderName: obj.title,
+                        successUrl: window.location.origin + "/#/service/paydone",
+                        failUrl: window.location.origin + "/#/service/payfail",
+                        customerEmail: response.data.email,
+                        customerName: response.data.name,
+                        customerMobilePhone: response.data.phoneNumber,
+                    });
+                }
+            }catch(error){
+                console.log(error)
+            }
+            
+            
+        },
+
+        async getUserInfo(){
+            try {
+                const response = await instanceWithAuth.get("/user")
+                if(response.status == 200){
+                    this.user.email = response.data.email
+                    this.user.name = response.data.name
+                    this.user.phone = response.data.phoneNumber
+                }
+            }catch(error){
+                console.log(error)
+            }
         },
 
         createOrderId() {

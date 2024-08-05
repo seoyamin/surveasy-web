@@ -7,77 +7,20 @@
 <script>
 import axios from 'axios'
 import store from '@/store'
-import { updateDoc, getDoc, doc, getFirestore } from 'firebase/firestore';
-
 export default {
     
     methods:{
 
         goPayment(){
-            this.$router.push("/service/payment")
-        },  
-        
-        // TODO : edit
-        async uploadSurvey() {
             const obj = store.state.surveyOption
-            
             if(obj.title == '' || obj.institute == '' || obj.link == ''){
                 alert("필수 항목을 모두 입력해주세요.")
-            } else if (!this.$store.state.isLoggedIn) {
+            } else if (localStorage.getItem("access_token") == null) {
                 alert("로그인이 필요합니다.")
             } else {
-                store.commit('saveAccountName', {
-                    accountName: this.accountName
-                })
-                const pointAdd = Math.floor((obj.price - (obj.point + obj.coupon))*0.03)
-                try {
-                    await axios.post(
-                        'https://gosurveasy.co.kr/survey',
-                        {
-                            headCount: obj.headCount,
-                            spendTime: obj.spendTime,
-                            dueDate: new Date(store.state.surveyOption.endDate + "T" + store.state.surveyOption.endTime + "Z"),
-                            targetGender: obj.targetGender,
-                            targetAgeList: obj.targetAge,
-                            language: obj.language,
-                            identity: obj.identity,
-                            title: obj.title,
-                            targetInput: obj.targetInput,
-                            institute: obj.institute,
-                            link: obj.link,
-                            description: obj.description,
-                            notice: obj.notice,
-                            accountName: obj.accountName,
-                            price: obj.price - (obj.point + obj.coupon),
-                            priceDiscounted: obj.priceDiscounted,
-                            pointAdd: pointAdd,
-                            email: this.$store.state.currentUser.email,
-                            username: this.$store.state.currentUser.name
-                        }
-                    )
-                    this.$router.push("/service/paydone")
-
-                    const db = getFirestore()
-                    const userEmail = this.$store.state.currentUser.email
-                    const docSnap = await getDoc(doc(db, "userData", userEmail.toString()))
-                    console.log(pointAdd)
-                    if(docSnap.exists()){
-                        const data = docSnap.data()
-                        const now = data.point_current
-                        const total = data.point_total
-                        const docref = doc(db, "userData", userEmail.toString())
-                        await updateDoc(docref, { 
-                            point_current: (now - obj.point) + pointAdd,
-                            point_total: total + pointAdd
-                        })
-                    }
-
-                } catch (error) {
-                    console.log(error)
-                }
+                this.$router.push("/service/payment")
             }
-        },
-    
+        }
     }
 }
 </script>
