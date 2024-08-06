@@ -103,7 +103,8 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
+import { instanceWithAuth } from '../../../api/index'
 export default {
   data() {
     return {
@@ -141,12 +142,8 @@ export default {
   methods : {
     async listOrders() {
       try {
-        const response = await axios.post("https://gosurveasy.co.kr/survey/mypage/list",
-        {
-          email : this.$store.state.currentUser.email
-        })
+        const response = await instanceWithAuth.get('/survey/mypage/list')
         this.orderList = response.data.surveyMyPageOrderList
-        console.log(this.orderList.length)
       } catch (error) {
         console.log(error)
       }
