@@ -18,7 +18,6 @@
 </template>
 
 <script>
-import store from '@/store'
 import { instanceWithAuth } from '@/api';
 export default {
   data() {
@@ -32,19 +31,18 @@ export default {
 
   methods : {
     async getPaymentKey(){
-      const obj = store.state.surveyOption
+      const obj = JSON.parse(localStorage.getItem('surveyOption'))
       const urlParams = new URLSearchParams(window.location.search);
       const paymentKey = urlParams.get("paymentKey");
       const orderId = urlParams.get("orderId");
       const amount = urlParams.get("amount");
-      console.log(obj)
 
       const pointAdd = Math.floor((obj.price - (obj.point + obj.coupon))*0.03)
       try {
         const response = await instanceWithAuth.post('/survey', {
           headCount: obj.headCount,
           spendTime: obj.spendTime,
-          dueDate: new Date(store.state.surveyOption.endDate + "T" + store.state.surveyOption.endTime + "Z"),
+          dueDate: new Date(obj.endDate + "T" + obj.endTime + "Z"),
           targetGender: obj.targetGender,
           targetAgeList: obj.targetAge,
           language: obj.language,
@@ -60,11 +58,13 @@ export default {
             pointAdd: pointAdd,
             paymentKey : paymentKey,
             orderId : orderId,
-            price: amount
+            amount: amount
           }
         })
-        if(response.data.status != 200){
+        if(response.status != 200){
           this.isFailed = true
+        }else{
+          localStorage.removeItem('surveyOption')
         }
       } catch(error){
         this.isFailed = true

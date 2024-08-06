@@ -14,11 +14,12 @@ export default {
         goPayment(){
             const obj = store.state.surveyOption
             if(obj.title == '' || obj.institute == '' || obj.link == ''){
-                alert("필수 항목을 모두 입력해주세요.")
+              alert("필수 항목을 모두 입력해주세요.")
             } else if (localStorage.getItem("access_token") == null) {
-                alert("로그인이 필요합니다.")
+              alert("로그인이 필요합니다.")
             } else {
-                this.$router.push("/service/payment")
+              localStorage.setItem('surveyOption', JSON.stringify(obj))
+              this.$router.push("/service/payment")
             }
         }
     }
