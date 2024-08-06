@@ -71,13 +71,11 @@ export default createStore({
       priceDiscounted : 0,
       coupon : 0,
       point : 0,
-      
       title : '',
       targetInput : '',
       institute : '',
       link : '',
       notice : '',
-      accountName : '',
       description : ''
     },
 

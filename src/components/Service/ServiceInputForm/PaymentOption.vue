@@ -1,5 +1,6 @@
 <template>
     <div class="payment-option-container">
+      <!-- TODO : point -->
         <div class="input-title">쿠폰 / 적립금</div>
         <div class="option-border"></div>
         <div class="pay-option-block">
@@ -26,7 +27,6 @@
 <script>
 import axios from 'axios'
 import store from '@/store'
-import { getDoc, doc, getFirestore } from 'firebase/firestore';
 
 export default {
   data(){
@@ -41,7 +41,6 @@ export default {
 
   mounted(){
     this.reset()
-    this.fetchUserData_point()
   },
 
   methods : {
@@ -62,18 +61,6 @@ export default {
         })
       }
       
-    },
-
-    async fetchUserData_point(){
-      const db = getFirestore()
-      const email = this.$store.state.currentUser.email
-      const docSnap = await getDoc(doc(db, "userData", email.toString()))
-      if(docSnap.exists()){
-        const data = docSnap.data()
-        this.point = data.point_current
-      }else{
-        console.log("no")
-      }
     },
 
     reset(){
