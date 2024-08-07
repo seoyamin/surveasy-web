@@ -46,6 +46,9 @@ export default {
   background-color: rgba(255, 255, 255, 0.524);
   display: table;
   transition: opacity .3s ease;
+  display: flex;  
+  justify-content: center;  
+  align-items: center;  
 }
 .mypage-logout-container {
   display: flex;
@@ -54,7 +57,7 @@ export default {
   font-family: 'Noto Sans KR', sans-serif;
   width: 420px;
   height: 240px;
-  margin: 420px auto;
+  margin: auto;
   background-color: rgb(255, 255, 255);
   border: 1.5px solid #ededed;
   border-radius: 20px;
