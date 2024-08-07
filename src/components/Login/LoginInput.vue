@@ -53,11 +53,18 @@ export default {
           )
           localStorage.setItem("access_token", response.data.accessToken)
           VueCookies.set("refresh_token", response.data.refreshToken)
-          this.$router.push("/")
-          this.$router.go(0)
+          this.$router.go()
+          this.$router.push("/#")
+          
         } catch (error) {
-          alert(error)
-          console.log(error)
+          const status = error.response.status
+          if(status == 404){
+            alert("존재하지 않는 아이디입니다.")
+          }else if(status == 400){
+            alert("잘못된 비밀번호입니다.")
+          }else{
+            alert("아이디와 비밀번호를 다시 확인해주세요")
+          }
         }
       }
     }
