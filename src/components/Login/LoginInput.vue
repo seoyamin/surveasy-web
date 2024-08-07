@@ -53,8 +53,7 @@ export default {
           )
           localStorage.setItem("access_token", response.data.accessToken)
           VueCookies.set("refresh_token", response.data.refreshToken)
-          this.$router.go()
-          this.$router.push("/#")
+          this.$router.go("/#")
           
         } catch (error) {
           const status = error.response.status
@@ -125,10 +124,10 @@ export default {
 #btn-join {
   width: 51%;
   margin: auto;
-  padding: 12px; /* Increased padding for height */
+  padding: 12px; 
   font-size: 16px;
   border: none;
-  border-radius: 10px; /* Added border-radius */
+  border-radius: 10px; 
   background-color: #28a745;
   color: white;
   cursor: pointer;
@@ -148,60 +147,5 @@ export default {
 .login-input-findpw-container a:hover {
   text-decoration: underline;
 }
-
-
-/* .login-input-container {
-  font-family: 'Noto Sans KR', sans-serif;
-  margin: auto;
-  margin-top: 100px;
-  margin-bottom: 150px;
-}
-.login-input-form-container {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 20px;
-}
-.login-input-form-container input {
-  width: 300px;
-  height: 50px;
-  margin: 5px auto;
-  padding-left: 7px;
-  color: #727272;
-  background-color: white;
-  border: solid 1px #dadada;
-  border-radius: 5px;
-}
-.login-input-form-container input:focus {
-  color: #000000;
-  outline: 1px solid #0AAC00;
-}
-.login-input-button-container {
-  display: flex;
-  flex-direction: column;
-}
-.login-input-button-container button {
-  width: 320px;
-  height: 37px;
-  margin: 5px auto;
-  border: none;
-  border-radius: 7px;
-  cursor: pointer;
-}
-#btn-login {
-  background-color: #0AAC00;
-  color: white;
-}
-#btn-join {
-  border: solid 1px #0AAC00;
-}
-#btn-join a {
-  text-decoration: none;
-  color: white;
-}
-.login-input-findpw-container a {
-  font-size: 11px;
-  color: #727272;
-  text-decoration: none;
-} */
 
 </style>

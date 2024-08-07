@@ -152,7 +152,7 @@ export default {
     async deleteSurvey(id){
       try {
         if(confirm("정말 삭제하시겠습니까?")){
-          const response = await axios.delete(`https://gosurveasy.co.kr/survey/${id}`)
+          const response = await instanceWithAuth.delete(`/survey/${id}`)
           if(response.status == 200) {
             if(confirm("삭제되었습니다.")){
               this.$router.go("/mypage/order")
@@ -186,8 +186,7 @@ export default {
 
     async editSurvey(){
       try {
-        await axios.patch(
-          `https://gosurveasy.co.kr/survey/${this.editTarget.id}`,
+        await instanceWithAuth.patch(`survey/${this.editTarget.id}`, 
           {
             title: this.modalTitle,
             link: this.modalLink,
@@ -334,6 +333,9 @@ export default {
   background-color: rgba(0, 0, 0, 0.202);
   display: table;
   transition: opacity .3s ease;
+  display: flex;  
+  justify-content: center;  
+  align-items: center; 
 }
 .edit-contentsbox {
   display: flex;
@@ -342,7 +344,7 @@ export default {
   font-family: 'Noto Sans KR', sans-serif;
   width: 600px;
   height: 560px;
-  margin: 120px auto;
+  margin: auto;
   padding-top: 15px;
   padding-bottom: 30px;
   background-color: rgb(255, 255, 255);
