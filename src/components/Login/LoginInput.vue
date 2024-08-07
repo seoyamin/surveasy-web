@@ -8,8 +8,8 @@
     </div>
 
     <div class="login-input-button-container">
-      <button id="btn-login" @click="logIn()">로그인하기</button>
-      <router-link to="/join" id="btn-join-text"><button id="btn-join">회원가입하기</button></router-link>
+      <button id="btn-login" @click="logIn()">로그인</button>
+      <router-link to="/join" id="btn-join-text"><button id="btn-join">회원가입</button></router-link>
     </div>
 
     <div class="login-input-findpw-container">
@@ -73,16 +73,97 @@ export default {
 </script>
 
 <style>
+
 .login-input-container {
+  text-align: center;
+  font-family: 'Noto Sans KR', sans-serif;
+  margin-top: 10%;
+  margin-bottom: 20%;
+}
+
+.login-input-form-container {
+  margin-top: 50px;
+}
+
+.login-input-form-container input {
+  display: block;
+  width: 50%;
+  margin: 10px auto;
+  padding: 15px; 
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 10px; 
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.login-input-form-container input:focus {
+  border-color: #888;
+  outline: none;
+  box-shadow: 0 0 5px rgba(136, 136, 136, 0.5);
+}
+
+.login-input-button-container button {
+  width: 51%;
+  margin: 10px auto;
+  padding: 12px; 
+  font-size: 16px;
+  border: none;
+  border-radius: 10px; 
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+
+#btn-join-text {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+}
+
+#btn-join {
+  width: 51%;
   margin: auto;
+  padding: 12px; /* Increased padding for height */
+  font-size: 16px;
+  border: none;
+  border-radius: 10px; /* Added border-radius */
+  background-color: #28a745;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+
+.login-input-findpw-container {
+  margin-top: 20px;
+}
+
+.login-input-findpw-container a {
+  color: #727272;
+  text-decoration: none;
+}
+
+.login-input-findpw-container a:hover {
+  text-decoration: underline;
+}
+
+
+/* .login-input-container {
+  font-family: 'Noto Sans KR', sans-serif;
+  margin: auto;
+  margin-top: 100px;
+  margin-bottom: 150px;
 }
 .login-input-form-container {
   display: flex;
   flex-direction: column;
+  margin-bottom: 20px;
 }
 .login-input-form-container input {
-  width: 250px;
-  height: 30px;
+  width: 300px;
+  height: 50px;
   margin: 5px auto;
   padding-left: 7px;
   color: #727272;
@@ -99,8 +180,8 @@ export default {
   flex-direction: column;
 }
 .login-input-button-container button {
-  width: 260px;
-  height: 32px;
+  width: 320px;
+  height: 37px;
   margin: 5px auto;
   border: none;
   border-radius: 7px;
@@ -121,5 +202,6 @@ export default {
   font-size: 11px;
   color: #727272;
   text-decoration: none;
-}
+} */
+
 </style>
