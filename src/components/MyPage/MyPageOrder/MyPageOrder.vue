@@ -49,8 +49,10 @@
 
         <div class="mypage-order-bottom-container">
           <div class="mypage-order-bottom-container-item" v-if="item.status=='CREATED' || item.status=='WAITING'">
-            <a @click="openModal(item)"><img id="mypage-img-btn" width=22 src="@/assets/mypage/icon_edit.png"></a>
-            <a @click="deleteSurvey(item.id)"><img id="mypage-img-btn" width=22 src="@/assets/mypage/icon_delete.png"></a>
+            <a @click="openEdit(item)">옵션 변경</a>
+          </div>
+          <div class="mypage-order-bottom-container-item" v-if="item.status=='CREATED' || item.status=='WAITING'">
+            <a @click="openRefund(item)">환불</a>
           </div>
           <div class="mypage-order-bottom-container-item" v-else-if="item.status=='DONE' && item.reviewId == null">
             <router-link class="mypage-order-btn-review" :to="`/mypage/review/post/${item.id}/${item.title}`">후기 작성하기 〉</router-link>
@@ -61,8 +63,8 @@
     </div>
 
     <!-- 설문 수정 모달창 -->
-    <div v-if="editModal == true" class="edit-modal">
-      <div class="edit-contentsbox">
+    <div v-if="modal == true" class="edit-modal">
+      <div v-if="selectEdit" class="edit-contentsbox">
         <div id="edit-top">
           <a class="edit-close" @click="closeModal">X</a>
           <p class="edit-title">설문 수정하기</p>
@@ -97,6 +99,25 @@
           
           </div>
           <button id="edit-fin-btn" @click="editSurvey">수정 완료</button>
+      </div> 
+      <div v-else class="edit-contentsbox">
+        <div id="edit-top">
+          <a class="edit-close" @click="closeModal">X</a>
+          <p class="edit-title">환불하기</p>
+        </div>
+        <div v-if="this.editTarget.status=='CREATED' || this.editTarget.status=='WAITING'" class="refund-all">
+          <p>환불 금액 : </p>
+        </div>
+
+        <div v-else class="refund-part">
+          <p>환불 가능 금액 : </p>
+          <p>설문 진행 중에는 전액 환불이 불가합니다. 현재까지 수집된 응답 수에 비례하여 환불 금액이 산정됩니다.</p>
+        </div>
+        <p>영업일 기준 00일 내에 결제 수단으로 자동 환불 됩니다.</p>
+        <div id="detail-title">{{ this.editTarget }}</div>
+
+          
+          <button id="edit-fin-btn" @click="deleteSurvey">환불하기</button>
       </div>    
     </div>
   </div>
@@ -112,7 +133,9 @@ export default {
       headCountIdxMap: this.$store.state.maps.headCountMap,
       spendTimeIdxMap: this.$store.state.maps.spendTimeMap,
       orderList: [],
-      editModal: false,
+      modal: false,
+      selectEdit : false,
+      selectRefund : false,
       editTargetId : 0,
 
       editTarget : null,
@@ -149,10 +172,16 @@ export default {
       }
     },
 
-    async deleteSurvey(id){
+    openRefund(item){
+      this.modal = true
+      this.selectRefund = true
+      this.editTarget = item
+    },
+
+    async deleteSurvey(){
       try {
         if(confirm("정말 삭제하시겠습니까?")){
-          const response = await instanceWithAuth.delete(`/survey/${id}`)
+          const response = await instanceWithAuth.delete(`/survey/${this.editTarget.id}`)
           if(response.status == 200) {
             if(confirm("삭제되었습니다.")){
               this.$router.go("/mypage/order")
@@ -168,7 +197,7 @@ export default {
       }
     },
 
-    async openModal(item){
+    async openEdit(item){
       this.editTarget = item
       this.modalTitle = item.title
       this.modalLink = item.link
@@ -176,7 +205,8 @@ export default {
       this.modalHeadCount = item.headCount
       this.modalSpendTime = item.spendTime
       this.modalPrice = item.price
-      this.editModal = true
+      this.modal = true
+      this.selectEdit = true
       this.modalHeadCountList = [
         ["요구 응답수를 선택하세요", "HEAD"], ["30명", "HEAD_30"], ["40명", "HEAD_40"], ["50명", "HEAD_50"], ["60명", "HEAD_60"], ["70명", "HEAD_70"], ["80명", "HEAD_80"],
         ["90명", "HEAD_90"], ["100명", "HEAD_100"], ["120명", "HEAD_120"], ["140명", "HEAD_140"], ["160명", "HEAD_160"], ["180명", "HEAD_180"], ["200명", "HEAD_200"]
@@ -202,7 +232,9 @@ export default {
     },
 
     closeModal() {
-      this.editModal = false
+      this.modal = false
+      this.selectEdit = false
+      this.selectRefund = false
     },
     
   }
