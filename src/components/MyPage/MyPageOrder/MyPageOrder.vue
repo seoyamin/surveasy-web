@@ -106,18 +106,16 @@
           <p class="edit-title">환불하기</p>
         </div>
         <div v-if="this.editTarget.status=='CREATED' || this.editTarget.status=='WAITING'" class="refund-all">
-          <p>환불 금액 : </p>
+          <p>환불 금액 : {{ refundAllPrice }}원</p>
         </div>
 
         <div v-else class="refund-part">
-          <p>환불 가능 금액 : </p>
+          <p>환불 가능 금액 : {{ refundPrice }}원</p>
           <p>설문 진행 중에는 전액 환불이 불가합니다. 현재까지 수집된 응답 수에 비례하여 환불 금액이 산정됩니다.</p>
         </div>
-        <p>영업일 기준 00일 내에 결제 수단으로 자동 환불 됩니다.</p>
-        <div id="detail-title">{{ this.editTarget }}</div>
-
+        <p>영업일 기준 3일 내에 결제 수단으로 자동 환불 됩니다.</p>
           
-          <button id="edit-fin-btn" @click="deleteSurvey">환불하기</button>
+        <button id="edit-fin-btn" @click="deleteSurvey">환불하기</button>
       </div>    
     </div>
   </div>
@@ -130,6 +128,7 @@ export default {
   data() {
     return {
       headCountText: this.$store.state.tables.priceTextTable[0],
+      headCountArr :[0, 30, 40, 50, 60, 70, 80, 90, 100, 120, 140, 160, 180, 200],
       headCountIdxMap: this.$store.state.maps.headCountMap,
       spendTimeIdxMap: this.$store.state.maps.spendTimeMap,
       orderList: [],
@@ -159,6 +158,17 @@ export default {
         * ((this.$store.state.tables.priceTable[this.spendTimeIdxMap[this.modalSpendTime]][this.headCountIdxMap[this.modalHeadCount]]) / this.$store.state.tables.priceTable[this.spendTimeIdxMap[this.modalSpendTime]][this.headCountIdxMap[this.modalLastHeadCount]])).toFixed(0) / 10) * 10
 
       return p
+    },
+    refundAllPrice(){
+      return this.editTarget.price.toLocaleString()
+    },
+
+    refundPrice(){
+      const hc = this.headCountIdxMap[this.editTarget.headCount]
+      const require = this.headCountArr[hc]
+      const response = this.editTarget.responseCount
+      const rPrice = this.editTarget.price * ((require - response) / require)
+      return rPrice.toLocaleString()
     }
   },
 
