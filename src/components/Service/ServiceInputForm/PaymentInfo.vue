@@ -1,13 +1,32 @@
 <template>
-    <div class="pay-info-container">
-        <div><button class="pay-btn" @click="goPayment">결제하기</button></div>
+    <div v-if="this.$store.state.isLoggedIn" class="pay-info-container">
+      <div class="input-title">결제 방법</div>
+        <div class="option-border"></div>
+        <div class="pay-info-title">입금 계좌<br>
+            카카오뱅크 3333-11-5235460 (송다예)</div>
+        <input class="info-input" v-model="this.accountName" type="text" placeholder="입금자명" required>
+        <div class="icon-container">
+        <div class="icon" @mouseover="showInfo" @mouseleave="hideInfo">
+          <img src="@/assets/service/question.png" width="20" class="item-img">
+        </div>
+        <div v-if="isInfoVisible" class="info-box">
+          카드 결제와 관련된 문의는 입금자명에 본인 성함 작성하여 '결제하기' 버튼 클릭 후 문의 채널로 문의 주세요!
+        </div>
+      </div>
+        
     </div>
+    <div><button class="pay-btn" @click="goPayment">결제하기</button></div>
 </template>
 
 <script>
 import axios from 'axios'
 import store from '@/store'
 export default {
+    data(){
+      return{
+        accountName : '',
+      }
+    },
     
     methods:{
 
@@ -15,13 +34,75 @@ export default {
             const obj = store.state.surveyOption
             if(obj.title == '' || obj.institute == '' || obj.link == ''){
               alert("필수 항목을 모두 입력해주세요.")
-            } else if (localStorage.getItem("access_token") == null) {
+            } 
+            // X
+            else if(this.$store.state.isLoggedIn){
+              console.log("test")
+              this.fbService()
+            }
+
+            else if (localStorage.getItem("access_token") == null) {
               alert("로그인이 필요합니다.")
             } else {
               localStorage.setItem('surveyOption', JSON.stringify(obj))
               this.$router.push("/service/payment")
             }
-        }
+        },
+
+        async fbService(){
+          const obj = store.state.surveyOption
+          store.commit('saveAccountName', {
+                    accountName: this.accountName
+                })
+                const pointAdd = Math.floor((obj.price - (obj.point + obj.coupon))*0.03)
+                try {
+                    await axios.post(
+                        'https://gosurveasy.co.kr/survey',
+                        {
+                            headCount: obj.headCount,
+                            spendTime: obj.spendTime,
+                            dueDate: new Date(store.state.surveyOption.endDate + "T" + store.state.surveyOption.endTime + "Z"),
+                            targetGender: obj.targetGender,
+                            targetAgeList: obj.targetAge,
+                            language: obj.language,
+                            identity: obj.identity,
+                            title: obj.title,
+                            targetInput: obj.targetInput,
+                            institute: obj.institute,
+                            link: obj.link,
+                            description: obj.description,
+                            notice: obj.notice,
+                            accountName: obj.accountName,
+                            price: obj.price - (obj.point + obj.coupon),
+                            priceDiscounted: obj.priceDiscounted,
+                            pointAdd: pointAdd,
+                            email: this.$store.state.currentUser.email,
+                            username: this.$store.state.currentUser.name
+                        }
+                    )
+                    this.$router.push("/service/payfdone")
+
+                    const db = getFirestore()
+                    const userEmail = this.$store.state.currentUser.email
+                    const docSnap = await getDoc(doc(db, "userData", userEmail.toString()))
+                    console.log(pointAdd)
+                    if(docSnap.exists()){
+                        const data = docSnap.data()
+                        const now = data.point_current
+                        const total = data.point_total
+                        const docref = doc(db, "userData", userEmail.toString())
+                        await updateDoc(docref, { 
+                            point_current: (now - obj.point) + pointAdd,
+                            point_total: total + pointAdd
+                        })
+                    }
+
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+        
+
     }
 }
 </script>
@@ -32,7 +113,10 @@ export default {
     flex-direction: column;
     font-family: 'Noto Sans KR', sans-serif;
     margin: 30px;
-    
+    padding: 20px;
+    padding-left: 30px;
+    background-color: #fafafa;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
 }
 
 .pay-info-container .info-input {

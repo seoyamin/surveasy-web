@@ -20,18 +20,21 @@
 
 <script>
 import { instance } from '../../api/index'
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth' // X
 import VueCookies from "vue-cookies"
 export default {
   data() {
     return {
       email:'',
-      password:''
+      password:'',
+      admin : "admin@test.com"
     }
   },
 
   
   methods: {
     async logIn() {
+      
       if(this.email == '') {
         alert('이메일을 입력하세요')
         return
@@ -43,27 +46,45 @@ export default {
       }
 
       else {
-        try {
-          const response = await instance.post(
-            '/user/signin',
-            {
-              email: this.email,
-              password: this.password
-            }
-          )
-          localStorage.setItem("access_token", response.data.accessToken)
-          VueCookies.set("refresh_token", response.data.refreshToken)
-          this.$router.go("/#")
+        if(this.email == this.admin){
+          try {
+            const response = await instance.post(
+              '/user/signin',
+              {
+                email: this.email,
+                password: this.password
+              }
+            )
+            localStorage.setItem("access_token", response.data.accessToken)
+            VueCookies.set("refresh_token", response.data.refreshToken)
+            this.$router.go("/#")
           
-        } catch (error) {
-          const status = error.response.status
-          if(status == 404){
-            alert("존재하지 않는 아이디입니다.")
-          }else if(status == 400){
-            alert("잘못된 비밀번호입니다.")
-          }else{
-            alert("아이디와 비밀번호를 다시 확인해주세요")
+          } catch (error) {
+            const status = error.response.status
+            if(status == 404){
+              alert("존재하지 않는 아이디입니다.")
+            }else if(status == 400){
+              alert("잘못된 비밀번호입니다.")
+            }else{
+              alert("아이디와 비밀번호를 다시 확인해주세요")
+            }
           }
+        }else{
+          console.log("login")
+          const auth = getAuth();
+          signInWithEmailAndPassword(auth, this.email, this.password)
+            .then((userCredential) => {
+              const user = userCredential.user
+              this.$store.dispatch('setCurrentUser', {
+                payload: auth.currentUser.email
+              })
+              this.$router.push('/')
+            })
+            .catch((error) => {
+              const errorCode = error.code;
+              const errorMsg = error.message;
+              alert(this.$store.state.firebaseAuthErrorMsg[errorCode])
+            })
         }
       }
     }
