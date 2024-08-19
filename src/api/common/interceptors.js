@@ -25,7 +25,7 @@ export function setInterceptors(instance) {
     },
     async function(error) {
       const originalRequest = error.config
-      console.log(originalRequest)
+      
       if(error.response.status == 401 &&  !originalRequest._retry) {
         originalRequest._retry = true;
         const refreshToken = VueCookies.get("refresh_token")

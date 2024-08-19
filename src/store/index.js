@@ -76,7 +76,8 @@ export default createStore({
       institute : '',
       link : '',
       notice : '',
-      description : ''
+      description : '',
+      accountName : '',
     },
 
     // X

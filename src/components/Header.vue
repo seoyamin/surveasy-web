@@ -38,7 +38,12 @@ export default {
           this.username = response.data.name
         }
       }catch(error){
-        console.log(error)
+        
+        if(this.$store.state.isLoggedIn){
+          console.log(this.$store.state.currentUser, "aaa")
+          this.isLogin = true
+          this.username = this.$store.state.currentUser.name
+        }
       }
     }
   }

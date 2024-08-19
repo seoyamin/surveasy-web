@@ -26,10 +26,15 @@ export default {
   },
   methods: {
     logout() {
-      VueCookies.remove("refresh_token")
-      localStorage.removeItem("access_token")
-      this.$router.push("/")
-      this.$router.go()
+      if(this.$store.state.isLoggedIn){
+        this.$store.dispatch('logout')
+      }else{
+        VueCookies.remove("refresh_token")
+        localStorage.removeItem("access_token")
+        this.$router.push("/")
+        this.$router.go()
+      }
+      
     }
   }
 }
