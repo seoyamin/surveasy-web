@@ -1,6 +1,6 @@
 <template>
-    <div class="pay-info-container">
-        <div class="input-title">결제 방법</div>
+    <div v-if="this.$store.state.isLoggedIn" class="pay-info-container">
+      <div class="input-title">결제 방법</div>
         <div class="option-border"></div>
         <div class="pay-info-title">입금 계좌<br>
             카카오뱅크 3333-11-5235460 (송다예)</div>
@@ -13,38 +13,45 @@
           카드 결제와 관련된 문의는 입금자명에 본인 성함 작성하여 '결제하기' 버튼 클릭 후 문의 채널로 문의 주세요!
         </div>
       </div>
-        <div><button class="pay-btn" @click="uploadSurvey">결제하기</button></div>
+        
     </div>
+    <div><button class="pay-btn" @click="goPayment">결제하기</button></div>
 </template>
 
 <script>
 import axios from 'axios'
 import store from '@/store'
-import { updateDoc, getDoc, doc, getFirestore } from 'firebase/firestore';
-
 export default {
     data(){
-        return{
-            accountName : '',
-            isInfoVisible: false,
-        }
+      return{
+        accountName : '',
+      }
     },
+    
     methods:{
-        showInfo() {
-            this.isInfoVisible = true;
-        },
-        hideInfo() {
-            this.isInfoVisible = false;
-        },
-        async uploadSurvey() {
+
+        goPayment(){
             const obj = store.state.surveyOption
-            
-            if(obj.title == '' || obj.institute == '' || obj.link == '' || this.accountName == ''){
-                alert("필수 항목을 모두 입력해주세요.")
-            } else if (!this.$store.state.isLoggedIn) {
-                alert("로그인이 필요합니다.")
+            if(obj.title == '' || obj.institute == '' || obj.link == ''){
+              alert("필수 항목을 모두 입력해주세요.")
+            } 
+            // X
+            else if(this.$store.state.isLoggedIn){
+              console.log("test")
+              this.fbService()
+            }
+
+            else if (localStorage.getItem("access_token") == null) {
+              alert("로그인이 필요합니다.")
             } else {
-                store.commit('saveAccountName', {
+              localStorage.setItem('surveyOption', JSON.stringify(obj))
+              this.$router.push("/service/payment")
+            }
+        },
+
+        async fbService(){
+          const obj = store.state.surveyOption
+          store.commit('saveAccountName', {
                     accountName: this.accountName
                 })
                 const pointAdd = Math.floor((obj.price - (obj.point + obj.coupon))*0.03)
@@ -73,7 +80,7 @@ export default {
                             username: this.$store.state.currentUser.name
                         }
                     )
-                    this.$router.push("/service/paydone")
+                    this.$router.push("/service/payfdone")
 
                     const db = getFirestore()
                     const userEmail = this.$store.state.currentUser.email
@@ -94,8 +101,8 @@ export default {
                     console.log(error)
                 }
             }
-        },
-    
+        
+
     }
 }
 </script>

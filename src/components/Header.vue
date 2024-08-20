@@ -7,16 +7,46 @@
     </div>
 
     <div>
-      <router-link to="/login" id="header-text" v-if="!this.$store.state.isLoggedIn">로그인 / 회원가입</router-link>
-      <router-link to="/mypage" id="header-text" v-else>안녕하세요, {{this.$store.state.currentUser.name}}님!</router-link>
+      <router-link to="/login" id="header-text" v-if="!this.isLogin">로그인 / 회원가입</router-link>
+      <router-link to="/mypage" id="header-text" v-else>안녕하세요, {{this.username}}님!</router-link>
     </div>
     
   </div>
 </template>
 
 <script>
+import { instanceWithAuth } from '../api/index'
 export default {
   name: 'HeaderContainer',
+  data(){
+    return {
+      isLogin : false,
+      username : ""
+    }
+  },
+
+  mounted(){
+    this.checkLoginState()
+  },
+
+  methods: {
+     async checkLoginState(){
+      try {
+        const response = await instanceWithAuth.get("/user")
+        if(response.status == 200){
+          this.isLogin = true
+          this.username = response.data.name
+        }
+      }catch(error){
+        
+        if(this.$store.state.isLoggedIn){
+          console.log(this.$store.state.currentUser, "aaa")
+          this.isLogin = true
+          this.username = this.$store.state.currentUser.name
+        }
+      }
+    }
+  }
   
 }
 </script>

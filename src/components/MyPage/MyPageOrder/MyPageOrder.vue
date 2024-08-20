@@ -1,9 +1,11 @@
 <template>
   <div class="mypage-order-container">
+    <div class="alert">주문 내역 수정 및 후기 작성 서비스는 9월 내 업데이트 예정입니다. <br>관련 문의는 하단 채널톡을 이용해주시기 바랍니다.</div>
     <div class="mypage-order-title-container" v-if="this.orderList.length != 0">
       <div>주문 내역</div>
       <div>입금 계좌: 카카오뱅크 3333-11-5235460 (송*예)</div>
     </div>
+
 
     <div class="mypage-order-none-msg" v-if="this.orderList.length == 0">
       주문 내역이 없습니다.
@@ -47,22 +49,24 @@
           </div>
         </div>    
 
-        <div class="mypage-order-bottom-container">
+        <!-- <div class="mypage-order-bottom-container">
           <div class="mypage-order-bottom-container-item" v-if="item.status=='CREATED' || item.status=='WAITING'">
-            <a @click="openModal(item)"><img id="mypage-img-btn" width=22 src="@/assets/mypage/icon_edit.png"></a>
-            <a @click="deleteSurvey(item.id)"><img id="mypage-img-btn" width=22 src="@/assets/mypage/icon_delete.png"></a>
+            <a @click="openEdit(item)">옵션 변경</a>
+          </div>
+          <div class="mypage-order-bottom-container-item" v-if="item.status=='CREATED' || item.status=='WAITING'">
+            <a @click="openRefund(item)">환불</a>
           </div>
           <div class="mypage-order-bottom-container-item" v-else-if="item.status=='DONE' && item.reviewId == null">
             <router-link class="mypage-order-btn-review" :to="`/mypage/review/post/${item.id}/${item.title}`">후기 작성하기 〉</router-link>
           </div>
           
-        </div>    
+        </div>     -->
       </div>
     </div>
 
     <!-- 설문 수정 모달창 -->
-    <div v-if="editModal == true" class="edit-modal">
-      <div class="edit-contentsbox">
+    <div v-if="modal == true" class="edit-modal">
+      <div v-if="selectEdit" class="edit-contentsbox">
         <div id="edit-top">
           <a class="edit-close" @click="closeModal">X</a>
           <p class="edit-title">설문 수정하기</p>
@@ -97,21 +101,42 @@
           
           </div>
           <button id="edit-fin-btn" @click="editSurvey">수정 완료</button>
+      </div> 
+      <div v-else class="edit-contentsbox">
+        <div id="edit-top">
+          <a class="edit-close" @click="closeModal">X</a>
+          <p class="edit-title">환불하기</p>
+        </div>
+        <div v-if="this.editTarget.status=='CREATED' || this.editTarget.status=='WAITING'" class="refund-all">
+          <p>환불 금액 : {{ refundAllPrice }}원</p>
+        </div>
+
+        <div v-else class="refund-part">
+          <p>환불 가능 금액 : {{ refundPrice }}원</p>
+          <p>설문 진행 중에는 전액 환불이 불가합니다. 현재까지 수집된 응답 수에 비례하여 환불 금액이 산정됩니다.</p>
+        </div>
+        <p>영업일 기준 3일 내에 결제 수단으로 자동 환불 됩니다.</p>
+          
+        <button id="edit-fin-btn" @click="deleteSurvey">환불하기</button>
       </div>    
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
+import { instanceWithAuth } from '../../../api/index'
 export default {
   data() {
     return {
       headCountText: this.$store.state.tables.priceTextTable[0],
+      headCountArr :[0, 30, 40, 50, 60, 70, 80, 90, 100, 120, 140, 160, 180, 200],
       headCountIdxMap: this.$store.state.maps.headCountMap,
       spendTimeIdxMap: this.$store.state.maps.spendTimeMap,
       orderList: [],
-      editModal: false,
+      modal: false,
+      selectEdit : false,
+      selectRefund : false,
       editTargetId : 0,
 
       editTarget : null,
@@ -135,27 +160,54 @@ export default {
         * ((this.$store.state.tables.priceTable[this.spendTimeIdxMap[this.modalSpendTime]][this.headCountIdxMap[this.modalHeadCount]]) / this.$store.state.tables.priceTable[this.spendTimeIdxMap[this.modalSpendTime]][this.headCountIdxMap[this.modalLastHeadCount]])).toFixed(0) / 10) * 10
 
       return p
+    },
+    refundAllPrice(){
+      return this.editTarget.price.toLocaleString()
+    },
+
+    refundPrice(){
+      const hc = this.headCountIdxMap[this.editTarget.headCount]
+      const require = this.headCountArr[hc]
+      const response = this.editTarget.responseCount
+      const rPrice = this.editTarget.price * ((require - response) / require)
+      return rPrice.toLocaleString()
     }
   },
 
   methods : {
     async listOrders() {
-      try {
-        const response = await axios.post("https://gosurveasy.co.kr/survey/mypage/list",
-        {
-          email : this.$store.state.currentUser.email
-        })
-        this.orderList = response.data.surveyMyPageOrderList
-        console.log(this.orderList.length)
-      } catch (error) {
-        console.log(error)
+      if(this.$store.state.isLoggedIn){
+        try {
+          const response = await axios.post("https://gosurveasy.co.kr/survey/mypage/list",
+          {
+            email : this.$store.state.currentUser.email
+          })
+          this.orderList = response.data.surveyMyPageOrderList
+          console.log(this.orderList.length)
+        } catch (error) {
+          console.log(error)
+        }
+      } else {
+        try {
+          const response = await instanceWithAuth.get('/survey/mypage/list')
+          this.orderList = response.data.surveyMyPageOrderList
+        } catch (error) {
+          console.log(error)
+        }
       }
+      
     },
 
-    async deleteSurvey(id){
+    openRefund(item){
+      this.modal = true
+      this.selectRefund = true
+      this.editTarget = item
+    },
+
+    async deleteSurvey(){
       try {
         if(confirm("정말 삭제하시겠습니까?")){
-          const response = await axios.delete(`https://gosurveasy.co.kr/survey/${id}`)
+          const response = await instanceWithAuth.delete(`/survey/${this.editTarget.id}`)
           if(response.status == 200) {
             if(confirm("삭제되었습니다.")){
               this.$router.go("/mypage/order")
@@ -171,7 +223,7 @@ export default {
       }
     },
 
-    async openModal(item){
+    async openEdit(item){
       this.editTarget = item
       this.modalTitle = item.title
       this.modalLink = item.link
@@ -179,7 +231,8 @@ export default {
       this.modalHeadCount = item.headCount
       this.modalSpendTime = item.spendTime
       this.modalPrice = item.price
-      this.editModal = true
+      this.modal = true
+      this.selectEdit = true
       this.modalHeadCountList = [
         ["요구 응답수를 선택하세요", "HEAD"], ["30명", "HEAD_30"], ["40명", "HEAD_40"], ["50명", "HEAD_50"], ["60명", "HEAD_60"], ["70명", "HEAD_70"], ["80명", "HEAD_80"],
         ["90명", "HEAD_90"], ["100명", "HEAD_100"], ["120명", "HEAD_120"], ["140명", "HEAD_140"], ["160명", "HEAD_160"], ["180명", "HEAD_180"], ["200명", "HEAD_200"]
@@ -189,8 +242,7 @@ export default {
 
     async editSurvey(){
       try {
-        await axios.patch(
-          `https://gosurveasy.co.kr/survey/${this.editTarget.id}`,
+        await instanceWithAuth.patch(`survey/${this.editTarget.id}`, 
           {
             title: this.modalTitle,
             link: this.modalLink,
@@ -206,7 +258,9 @@ export default {
     },
 
     closeModal() {
-      this.editModal = false
+      this.modal = false
+      this.selectEdit = false
+      this.selectRefund = false
     },
     
   }
@@ -337,6 +391,9 @@ export default {
   background-color: rgba(0, 0, 0, 0.202);
   display: table;
   transition: opacity .3s ease;
+  display: flex;  
+  justify-content: center;  
+  align-items: center; 
 }
 .edit-contentsbox {
   display: flex;
@@ -345,7 +402,7 @@ export default {
   font-family: 'Noto Sans KR', sans-serif;
   width: 600px;
   height: 560px;
-  margin: 120px auto;
+  margin: auto;
   padding-top: 15px;
   padding-bottom: 30px;
   background-color: rgb(255, 255, 255);
@@ -424,5 +481,12 @@ export default {
   background-color: white;
   border: solid 1px #dadada;
   border-radius: 5px;
+}
+
+.alert{
+  font-size: 15px;
+  align-content: start;
+  color: #757272;
+  margin-bottom: 20px;
 }
 </style>

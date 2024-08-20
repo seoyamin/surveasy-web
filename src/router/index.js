@@ -8,13 +8,15 @@ import Join from '../views/Join/Join'
 import JoinDone from '../views/Join/JoinDone'
 import Service from '../views/Service/Service'
 import ServiceInputForm from '../views/Service/ServiceInputForm'
+import ServiceFbPayDone from '../views/Service/ServiceFbPayDone'
 import ServicePayDone from '../views/Service/ServicePayDone'
+import ServicePayFail from '../views/Service/ServicePayFail'
+import ServicePayment from '../views/Service/ServicePayment'
 import List from '../views/List/List'
 import KnowHow from '../views/KnowHow/KnowHow'
 import KnowHowContent from '../views/KnowHow/KnowHowContent'
 import MyPage from '../views/MyPage/MyPage'
 import MyPageOrder from '../views/MyPage/MyPageOrder'
-import MyPagePoint from '../views/MyPage/MyPagePoint'
 import MyPageReview from '../views/MyPage/MyPageReview/MyPageReview'
 import MyPageReviewPost from '../views/MyPage/MyPageReview/Review/MyPageReviewPost'
 import MyPageReviewPostDone from '../views/MyPage/MyPageReview/Review/MyPageReviewPostDone'
@@ -68,9 +70,24 @@ const routes = [
     component: ServiceInputForm
   },
   {
+    path: '/service/payment',
+    name: 'ServicePayment',
+    component: ServicePayment
+  },
+  {
+    path: '/service/payfdone',
+    name: 'ServicePayFbDone',
+    component: ServiceFbPayDone
+  },
+  {
     path: '/service/paydone',
     name: 'ServicePayDone',
     component: ServicePayDone
+  },
+  {
+    path: '/service/payfail',
+    name: 'ServicePayFail',
+    component: ServicePayFail
   },
   {
     path: '/list',
@@ -96,11 +113,6 @@ const routes = [
     path: '/mypage/order',
     name: 'MyPageOrder',
     component: MyPageOrder
-  },
-  {
-    path: '/mypage/point',
-    name: 'MyPagePoint',
-    component: MyPagePoint
   },
   {
     path: '/mypage/review',
