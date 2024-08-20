@@ -31,8 +31,7 @@ export default {
       }else{
         VueCookies.remove("refresh_token")
         localStorage.removeItem("access_token")
-        this.$router.push("/")
-        this.$router.go()
+        
       }
       
     }

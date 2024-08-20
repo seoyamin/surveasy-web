@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import { instanceWithAuth } from '../../api/index'
 export default {
   name: 'MyPageDashboard',
@@ -29,13 +30,27 @@ export default {
 
   methods : {
     async fetchDashBoard(){
-      try {
-        const response = await instanceWithAuth.get('/survey/mypage')
-        console.log(response)
-        this.surveyOngoing = response.data.surveyOngoing
-        this.surveyDone = response.data.surveyDone
-      } catch (error) {
-        console.log(error)
+      if(this.$store.state.isLoggedIn){
+          try {
+            const response = await axios.post("https://gosurveasy.co.kr/survey/mypage",
+          {
+            email : this.$store.state.currentUser.email
+          })
+          this.surveyOngoing = response.data.surveyOngoing
+          this.surveyDone = response.data.surveyDone
+        } catch (error) {
+          console.log(error)
+        }
+      }else
+      {
+        try {
+          const response = await instanceWithAuth.get('/survey/mypage')
+          //console.log(response)
+          this.surveyOngoing = response.data.surveyOngoing
+          this.surveyDone = response.data.surveyDone
+        } catch (error) {
+          console.log(error)
+        }
       }
     }
   }

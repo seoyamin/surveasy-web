@@ -26,33 +26,33 @@ export function setInterceptors(instance) {
     async function(error) {
       const originalRequest = error.config
       
-      if(error.response.status == 401 &&  !originalRequest._retry) {
-        originalRequest._retry = true;
-        const refreshToken = VueCookies.get("refresh_token")
-        if(refreshToken == null) {
-          localStorage.removeItem("access_token")
-          router.push({ name: 'Login' })
-          return Promise.reject(error)
-        }
-        try {
-          const response = await axios.post("https://surveasy.store/user/reissue",{
-            refreshToken : refreshToken
-          })
-          if(response.status == 200){
-            localStorage.setItem("access_token", response.data.accessToken)
-            VueCookies.set("refresh_token", response.data.refreshToken)
-            originalRequest.headers.Authorization = 'Bearer ' + response.data.accessToken
+      // if(error.response.status == 401 &&  !originalRequest._retry) {
+      //   originalRequest._retry = true;
+      //   const refreshToken = VueCookies.get("refresh_token")
+      //   if(refreshToken == null) {
+      //     localStorage.removeItem("access_token")
+      //     router.push({ name: 'Login' })
+      //     return Promise.reject(error)
+      //   }
+      //   try {
+      //     const response = await axios.post("https://surveasy.store/user/reissue",{
+      //       refreshToken : refreshToken
+      //     })
+      //     if(response.status == 200){
+      //       localStorage.setItem("access_token", response.data.accessToken)
+      //       VueCookies.set("refresh_token", response.data.refreshToken)
+      //       originalRequest.headers.Authorization = 'Bearer ' + response.data.accessToken
             
-            return instance(originalRequest)
-          }else{
-            handleTokenExpiration()
-            return Promise.reject(error)
-          }
-        } catch (error){
-          handleTokenExpiration()
-          return Promise.reject(error)
-        }
-      }
+      //       return instance(originalRequest)
+      //     }else{
+      //       handleTokenExpiration()
+      //       return Promise.reject(error)
+      //     }
+      //   } catch (error){
+      //     handleTokenExpiration()
+      //     return Promise.reject(error)
+      //   }
+      // }
       return Promise.reject(error);
     },
   );
