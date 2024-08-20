@@ -13,7 +13,7 @@
     </div>
 
     <div class="login-input-findpw-container">
-      <router-link to="/findpw">비밀번호 찾기</router-link>
+      <!-- <router-link to="/findpw">비밀번호 찾기</router-link> -->
     </div>
   </div>
 </template>
@@ -57,7 +57,7 @@ export default {
             )
             localStorage.setItem("access_token", response.data.accessToken)
             VueCookies.set("refresh_token", response.data.refreshToken)
-            this.$router.go("/#")
+            this.$router.push('/')
           
           } catch (error) {
             const status = error.response.status

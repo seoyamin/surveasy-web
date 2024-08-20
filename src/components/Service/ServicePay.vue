@@ -95,5 +95,23 @@ export default {
 </script>
 
 <style>
+#payment-button {
+  width: 80%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  color: #0CAE02;
+  background-color: #ffffff;
+  border: 1px solid #0CAE02;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-family: 'Noto Sans KR', sans-serif;
+  margin-bottom: 30px;
+}
+
+#payment-button:hover {
+  color: white;
+  background: #0AAB00;
+}
 
 </style>

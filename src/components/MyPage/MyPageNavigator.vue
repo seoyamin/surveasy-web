@@ -2,7 +2,7 @@
   <div class="mypage-navigator-container">
     <div class="mypage-navigator-button-container">
       <router-link to="/mypage/order" class="mypage-navigator-button-container-item"><div>주문내역</div></router-link>
-      <router-link to="/mypage/review" class="mypage-navigator-button-container-item"><div>리뷰 작성</div></router-link>
+      <!-- <router-link to="/mypage/review" class="mypage-navigator-button-container-item"><div>리뷰 작성</div></router-link> -->
       <!-- <router-link to="/mypage/point"><div class="mypage-navigator-button-container-item">적립금</div></router-link> -->
       <router-link to="/mypage/myinfo" class="mypage-navigator-button-container-item"><div>나의 정보</div></router-link>
 

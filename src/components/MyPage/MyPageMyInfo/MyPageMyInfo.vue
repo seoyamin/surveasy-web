@@ -19,7 +19,7 @@
       </div>
       <div class="mypage-myinfo-main-row">
         <div class="mypage-myinfo-option">적립금</div>
-        <div class="mypage-myinfo-value">{{ this.formattedAmount }}원</div>
+        <div class="mypage-myinfo-value">{{ this.nowReward }}원</div>
       </div>
 
 
@@ -43,10 +43,13 @@
 
 <script>
 import { instanceWithAuth } from '../../../api/index'
+import { getDoc, doc, getFirestore } from 'firebase/firestore';
+
 export default {
   data(){
     return{
-      myInfo : {}
+      myInfo : {},
+      nowReward: 0,
     }
   },
 
@@ -59,6 +62,7 @@ export default {
       }
       return this.myInfo.phoneNumber
     },
+    // 나중에 이걸로 바꿔야함
     formattedAmount() {
       const amount = parseFloat(this.myInfo.point)
       if (isNaN(amount)) {
@@ -71,13 +75,42 @@ export default {
 
   mounted(){
     this.getUserInfo()
+    
   },
 
   methods : {
     async getUserInfo(){
-      const response = await instanceWithAuth.get("/user")
-      this.myInfo = response.data
-    }
+      if(this.$store.state.isLoggedIn && this.$store.state.currentUser != null){
+        this.fetchUserData_point()
+        this.myInfo = {
+          email : this.$store.state.currentUser.email,
+          name : this.$store.state.currentUser.name,
+          phoneNumber : this.$store.state.currentUser.phoneNumber,
+          point : this.nowReward
+        }
+        
+      }else{
+        try{
+          const response = await instanceWithAuth.get("/user")
+          this.myInfo = response.data
+        }catch(e){
+          console.log(e)
+        }
+      }
+      
+    },
+
+    async fetchUserData_point(){
+      const db = getFirestore()
+      const email = this.$store.state.currentUser.email
+      const docSnap = await getDoc(doc(db, "userData", email.toString()))
+      if(docSnap.exists()){
+        const data = docSnap.data()
+        this.nowReward = data.point_current
+      }else{
+        console.log("no")
+      }
+    },
   }
 
 }
