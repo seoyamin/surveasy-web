@@ -1,7 +1,7 @@
 <template>
   <div class="service-detail-container">
     <div class="full-detail-container">
-      <img src="@/assets/service/service_detail.png" alt="detail">
+      <img src="@/assets/service/survey_detail.png.png" alt="detail">
     </div>
     
   </div>

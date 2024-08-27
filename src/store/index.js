@@ -1,12 +1,15 @@
 import { createStore } from "vuex";
 import { doc, getDoc, getFirestore } from 'firebase/firestore'
 import createPersistedState from 'vuex-persistedstate'
+import { instanceWithAuth } from '../api/index'
+
 
 // state, getters, mutations, actions, modules
 export default createStore({
   state: {
     isLoggedIn : false, // X
     currentUser : null, // X
+    userName : null,
     tables : {
       priceTextTable: [
           ['', '30명', '40명', '50명', '60명', '70명', '80명', '90명', '100명', '120명', '140명', '160명', '180명', '200명'],
@@ -95,11 +98,13 @@ export default createStore({
       console.log(state.currentUser)
       state.isLoggedIn = true
     },
+    setCurrentUserNameMutation(state, payload) {
+      state.userName = payload
+    },
     // X
     logoutMutation(state) {
-      console.log('logoutMutation')
+      state.userName = null
       state.currentUser = null
-      state.isLoggedIn = false
     },
     saveSurveyOption(state, payload) {
       state.surveyOption.headCount = payload.headCount,
@@ -141,12 +146,24 @@ export default createStore({
       await getDoc(docRef)
         .then((data) => {
           commit('setCurrentUserMutation',data.data())
+          commit('setCurrentUserNameMutation',data.data().name)
           console.log(data.data())
         })
     },
 
+    async setCurrentUserAdmin({state, commit}){
+
+      try {
+        const response = await instanceWithAuth.get("/user")
+        if(response.status == 200){
+          commit('setCurrentUserNameMutation',response.data.name)
+        }
+      }catch(error){
+        
+      }
+    },
+
     logout({commit}){
-      console.log('logoutAction')
       commit('logoutMutation')
     }
   },
