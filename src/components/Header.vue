@@ -7,8 +7,8 @@
     </div>
 
     <div>
-      <router-link to="/login" id="header-text" v-if="!this.isLogin">로그인 / 회원가입</router-link>
-      <router-link to="/mypage" id="header-text" v-else>안녕하세요, {{this.username}}님!</router-link>
+      <router-link to="/login" id="header-text" v-if="this.$store.state.userName == null">로그인 / 회원가입</router-link>
+      <router-link to="/mypage" id="header-text" v-else>안녕하세요, {{this.$store.state.userName}}님!</router-link>
     </div>
     
   </div>
@@ -18,12 +18,17 @@
 import { instanceWithAuth } from '../api/index'
 export default {
   name: 'HeaderContainer',
-  data(){
-    return {
-      isLogin : false,
-      username : ""
-    }
+  computed: {
+    user() {
+      return this.$store.state.userName;
+    },
   },
+  // data(){
+  //   return {
+  //     isLogin : false,
+  //     username : ""
+  //   }
+  // },
 
   mounted(){
     this.checkLoginState()
@@ -34,15 +39,13 @@ export default {
       try {
         const response = await instanceWithAuth.get("/user")
         if(response.status == 200){
-          this.isLogin = true
-          this.username = response.data.name
+          this.$store.dispatch('setCurrentUserAdmin')
         }
       }catch(error){
         
-        if(this.$store.state.isLoggedIn){
-          console.log(this.$store.state.currentUser, "aaa")
-          this.isLogin = true
-          this.username = this.$store.state.currentUser.name
+        if(this.$store.state.currentUser != null){
+          this.$store.dispatch('setCurrentUser', {payload: this.$store.state.currentUser.email})
+
         }
       }
     }

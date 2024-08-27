@@ -26,11 +26,14 @@ export default {
   },
   methods: {
     logout() {
-      if(this.$store.state.isLoggedIn){
+      if(this.$store.state.currentUser != null){
         this.$store.dispatch('logout')
+        this.$router.push('/')
       }else{
         VueCookies.remove("refresh_token")
         localStorage.removeItem("access_token")
+        this.$store.dispatch('logout')
+        this.$router.push('/')
         
       }
       
