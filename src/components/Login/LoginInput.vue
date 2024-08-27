@@ -57,6 +57,7 @@ export default {
             )
             localStorage.setItem("access_token", response.data.accessToken)
             VueCookies.set("refresh_token", response.data.refreshToken)
+            this.$store.dispatch('setCurrentUserAdmin')
             this.$router.push('/')
           
           } catch (error) {
@@ -70,7 +71,6 @@ export default {
             }
           }
         }else{
-          console.log("login")
           const auth = getAuth();
           signInWithEmailAndPassword(auth, this.email, this.password)
             .then((userCredential) => {
