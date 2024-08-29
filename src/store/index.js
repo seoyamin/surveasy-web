@@ -105,6 +105,7 @@ export default createStore({
     logoutMutation(state) {
       state.userName = null
       state.currentUser = null
+      state.isLoggedIn = false;
     },
     saveSurveyOption(state, payload) {
       state.surveyOption.headCount = payload.headCount,
