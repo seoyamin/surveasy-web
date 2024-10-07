@@ -53,7 +53,7 @@ export default {
     setSurveyOptions(){
       store.commit('saveSurveyInputInfo', {
         title : this.title,
-        tarInput : this.target,
+        targetInput : this.target,
         institute : this.institute,
         link : this.link,
         notice : this.notice,
