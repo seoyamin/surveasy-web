@@ -21,6 +21,7 @@
 <script>
 import axios from 'axios'
 import store from '@/store'
+import { updateDoc, getDoc, doc, getFirestore } from 'firebase/firestore';
 export default {
     data(){
       return{
@@ -86,6 +87,7 @@ export default {
                     const userEmail = this.$store.state.currentUser.email
                     const docSnap = await getDoc(doc(db, "userData", userEmail.toString()))
                     console.log(pointAdd)
+                    console.log('pointAdd')
 
                     const botId = "5505316703:AAGLByXDGZ0pE4n4-sAtU1SZW8GNgMs6dtE";
                     // const chatId = "5620110827";
@@ -111,6 +113,7 @@ export default {
                         )
                     } catch (error) {
                     console.log(error)
+                    console.log('에러났음')
                     }
                     }
 
