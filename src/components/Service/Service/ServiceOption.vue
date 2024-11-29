@@ -240,12 +240,12 @@ export default {
       var hourGap = parseInt((tmp - this.nowDate.getTime()) / 3600000)
       var hourOptionIndex = 0
 
-      if (hourGap >= 18 && hourGap < 24) hourOptionIndex = 1
-      else if (hourGap >= 24 && hourGap < 36) hourOptionIndex = 2
+      // if (hourGap >= 18 && hourGap < 24) hourOptionIndex = 1
+      if (hourGap >= 24 && hourGap < 36) hourOptionIndex = 2
       else if (hourGap >= 36 && hourGap < 48) hourOptionIndex = 3
       else if (hourGap >= 48 && hourGap < 72) hourOptionIndex = 4
       else if (hourGap >= 72) hourOptionIndex = 5
-      else if (hourGap < 18) hourOptionIndex = 6
+      else if (hourGap < 24) hourOptionIndex = 6
 
       return hourOptionIndex
     },
@@ -307,7 +307,7 @@ export default {
       if (this.id == 0 || this.endTime == '00:00' || this.spendTime == "TIME" || this.headCount == "HEAD" || this.timeOptionCal == 0 || this.targetAge == "AGE" || this.targetGender == "GENDER" || this.identity == "IDENTITY"){
         alert("모든 옵션을 입력해주세요.")
       } else if(this.timeOptionCal == 6) {
-        alert("마감 기한은 최소 18시간 이상부터 선택 가능합니다.")
+        alert("마감 기한은 최소 24시간 이상부터 선택 가능합니다.")
       } 
       // X
       else if(this.$store.state.isLoggedIn){
