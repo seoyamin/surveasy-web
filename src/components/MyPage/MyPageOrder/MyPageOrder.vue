@@ -1,6 +1,6 @@
 <template>
   <div class="mypage-order-container">
-    <div class="alert">주문 내역 수정 및 후기 작성 서비스는 9월 내 업데이트 예정입니다. <br>관련 문의는 하단 채널톡을 이용해주시기 바랍니다.</div>
+    <!-- <div class="alert">주문 내역 수정 및 후기 작성 서비스는 9월 내 업데이트 예정입니다. <br>관련 문의는 하단 채널톡을 이용해주시기 바랍니다.</div> -->
     <div class="mypage-order-title-container" v-if="this.orderList.length != 0">
       <div>주문 내역</div>
       <div>입금 계좌: 카카오뱅크 3333-11-5235460 (송*예)</div>
@@ -49,18 +49,18 @@
           </div>
         </div>    
 
-        <!-- <div class="mypage-order-bottom-container">
-          <div class="mypage-order-bottom-container-item" v-if="item.status=='CREATED' || item.status=='WAITING'">
+        <div class="mypage-order-bottom-container">
+          <!-- <div class="mypage-order-bottom-container-item" v-if="item.status=='CREATED' || item.status=='WAITING'">
             <a @click="openEdit(item)">옵션 변경</a>
           </div>
           <div class="mypage-order-bottom-container-item" v-if="item.status=='CREATED' || item.status=='WAITING'">
             <a @click="openRefund(item)">환불</a>
-          </div>
-          <div class="mypage-order-bottom-container-item" v-else-if="item.status=='DONE' && item.reviewId == null">
+          </div> -->
+          <div class="mypage-order-bottom-container-item" v-if="item.status=='DONE' && item.reviewId == null">
             <router-link class="mypage-order-btn-review" :to="`/mypage/review/post/${item.id}/${item.title}`">후기 작성하기 〉</router-link>
           </div>
           
-        </div>     -->
+        </div>    
       </div>
     </div>
 
