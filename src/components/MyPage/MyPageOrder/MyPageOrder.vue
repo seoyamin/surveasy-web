@@ -286,7 +286,7 @@ export default {
             font-family: Arial, sans-serif;
             line-height: 1.6;
             font-size : 14px;
-            width: 800px; 
+            width: 1000px; 
             height: 800px;
             margin-top:100px;
         }
@@ -392,8 +392,8 @@ export default {
 
       html2canvas(hiddenDiv, {
         useCORS: true,
-        scale: 2, // 캡처 배율 고정
-        width: 800, // 캡처할 영역의 고정 너비
+        scale: 2, 
+        width: 1000, 
         height : 800
       }).then((canvas) => {
         const imgData = canvas.toDataURL('image/png');
