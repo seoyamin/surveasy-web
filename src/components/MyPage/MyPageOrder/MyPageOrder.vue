@@ -1,6 +1,6 @@
 <template>
   <div class="mypage-order-container">
-    <div class="alert">주문 내역 수정 및 후기 작성 서비스는 9월 내 업데이트 예정입니다. <br>관련 문의는 하단 채널톡을 이용해주시기 바랍니다.</div>
+    <!-- <div class="alert">주문 내역 수정 및 후기 작성 서비스는 9월 내 업데이트 예정입니다. <br>관련 문의는 하단 채널톡을 이용해주시기 바랍니다.</div> -->
     <div class="mypage-order-title-container" v-if="this.orderList.length != 0">
       <div>주문 내역</div>
       <div>입금 계좌: 카카오뱅크 3333-11-5235460 (송*예)</div>
@@ -26,9 +26,9 @@
             <div class="mypage-order-middle-item">
               <span class="mypage-order-middle-item-option">진행 단계</span>
               <span v-if="item.status=='CREATED' || item.status=='WAITING'">검수중</span>
-              <span v-else-if="item.status=='IN_PROGRESS'">설문 진행중</span>
-              <span v-else-if="item.status=='DONE' && item.reviewId == null">패널 응답 완료</span>
-              <span v-else-if="item.status=='DONE' && item.reviewId != null">후기 작성 완료</span>
+              <span v-else-if="item.status=='IN_PROGRESS'">설문 진행중<span class="mypage-receipt" @click="downloadHTML(item)">영수증 받기</span></span>
+              <span v-else-if="item.status=='DONE' && item.reviewId == null">패널 응답 완료<span class="mypage-receipt" @click="downloadHTML(item)">영수증 받기</span></span>
+              <span v-else-if="item.status=='DONE' && item.reviewId != null">후기 작성 완료<span class="mypage-receipt" @click="downloadHTML(item)">영수증 받기</span></span>
             </div>
             <div class="mypage-order-middle-item">
               <span class="mypage-order-middle-item-option">답변 수</span>
@@ -49,18 +49,18 @@
           </div>
         </div>    
 
-        <!-- <div class="mypage-order-bottom-container">
-          <div class="mypage-order-bottom-container-item" v-if="item.status=='CREATED' || item.status=='WAITING'">
+        <div class="mypage-order-bottom-container">
+          <!-- <div class="mypage-order-bottom-container-item" v-if="item.status=='CREATED' || item.status=='WAITING'">
             <a @click="openEdit(item)">옵션 변경</a>
           </div>
           <div class="mypage-order-bottom-container-item" v-if="item.status=='CREATED' || item.status=='WAITING'">
             <a @click="openRefund(item)">환불</a>
-          </div>
-          <div class="mypage-order-bottom-container-item" v-else-if="item.status=='DONE' && item.reviewId == null">
+          </div> -->
+          <div class="mypage-order-bottom-container-item" v-if="item.status=='DONE' && item.reviewId == null">
             <router-link class="mypage-order-btn-review" :to="`/mypage/review/post/${item.id}/${item.title}`">후기 작성하기 〉</router-link>
           </div>
           
-        </div>     -->
+        </div>    
       </div>
     </div>
 
@@ -125,12 +125,17 @@
 
 <script>
 import axios from 'axios'
+import html2canvas from 'html2canvas';
+
 import { instanceWithAuth } from '../../../api/index'
 export default {
   data() {
     return {
       headCountText: this.$store.state.tables.priceTextTable[0],
       headCountArr :[0, 30, 40, 50, 60, 70, 80, 90, 100, 120, 140, 160, 180, 200],
+      timeTextMap: {
+        "TIME" : "", "TIME_0" : "1분 이내", "TIME_1_3" : "1-3분", "TIME_4_6" : "4-6분", "TIME_7_10" : "7-10분", "TIME_11_15" : "11-15분", "TIME_16_20" : "16-20분"
+      },
       headCountIdxMap: this.$store.state.maps.headCountMap,
       spendTimeIdxMap: this.$store.state.maps.spendTimeMap,
       orderList: [],
@@ -171,7 +176,8 @@ export default {
       const response = this.editTarget.responseCount
       const rPrice = this.editTarget.price * ((require - response) / require)
       return rPrice.toLocaleString()
-    }
+    },
+    
   },
 
   methods : {
@@ -196,6 +202,10 @@ export default {
         }
       }
       
+    },
+    formattedAmount(price) {
+      if (price == 0) return '0';
+      return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     },
 
     openRefund(item){
@@ -261,6 +271,140 @@ export default {
       this.modal = false
       this.selectEdit = false
       this.selectRefund = false
+    },
+
+    downloadHTML(item) {
+
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html lang="ko">
+        <head>
+        <meta charset="UTF-8">
+        <title>영수증</title>
+        <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            font-size : 14px;
+            width: 1000px; 
+            height: 800px;
+            margin-top:100px;
+        }
+        h1 {
+            text-align: center; 
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .recipient {
+            text-align: center; 
+            font-size: 1em;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            table-layout: fixed;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .highlight {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .title {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .vat {
+            text-align: right;
+        }
+        </style>
+      </head>
+      <body>
+      <h1>영 수 증</h1>
+      <p class="recipient">${this.$store.state.currentUser.name} 귀하</p> 
+      <table>
+        
+        <tr>
+            <td class="highlight">영수일</td>
+            <td>${item.uploadedAt}</td>
+        </tr>
+        <tr>
+            <td class="highlight">담당자</td>
+            <td>송다예</td>
+        </tr>
+      </table>
+
+      <table>
+        <tr>
+            <th>등록번호</th>
+            <th>상호명</th>
+            <th>대표자</th>
+            <th>업태</th>
+            <th>종목</th>
+            <th>연락처</th>
+        </tr>
+        <tr>
+            <td>369-16-01796</td>
+            <td>턴업컴퍼니</td>
+            <td>송다예</td>
+            <td>도매 및 소매업</td>
+            <td>전자상거래 소매 중개업</td>
+            <td>official@gosurveasy.com</td>
+        </tr>
+      </table>
+
+      <p>※ 하기와 같이 영수합니다. (영수일로부터 3일 이내 입금 부탁드립니다)</p>
+
+      <table>
+        <tr>
+            <th>명칭</th>
+            <th>금액</th>
+            <th>비고</th>
+        </tr>
+        <tr>
+            <td>설문 응답 서비스<br>└ ${this.headCountText[this.headCountIdxMap[item.headCount]]} / ${this.timeTextMap[item.spendTime]} 소요</td>
+            <td>${this.formattedAmount(item.price)}</td>
+            <td>VAT 포함</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="vat">합계</td>
+            <td>${this.formattedAmount(item.price)}</td>
+        </tr>
+      </table>
+
+      <p>*결제 방법: 계좌이체</p>
+      </body>
+      </html>
+
+      `
+      const hiddenDiv = document.createElement('div');
+      hiddenDiv.innerHTML = htmlContent;
+
+      document.body.appendChild(hiddenDiv);
+
+      html2canvas(hiddenDiv, {
+        useCORS: true,
+        scale: 2, 
+        width: 1000, 
+        height : 800
+      }).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = imgData;
+        link.download = `설문 의뢰 영수증_${this.$store.state.currentUser.name}님.png`;
+        link.click();
+
+        document.body.removeChild(hiddenDiv);
+      });
+      
     },
     
   }
@@ -489,4 +633,12 @@ export default {
   color: #757272;
   margin-bottom: 20px;
 }
+.mypage-receipt{
+  font-size: 12px;
+  color: #757272;
+  margin-left: 10px;
+  text-decoration: underline;
+  cursor: pointer;
+}
 </style>
+

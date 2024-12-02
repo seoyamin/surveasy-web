@@ -53,33 +53,45 @@ export default {
       this.reviewData.score = num
     },
     async createReview(){
-      try{
-        await axios.post(
-          `https://gosurveasy.co.kr/review/${this.id}`,
-            {
-              grade: this.reviewData.score,
-              content: this.reviewData.reviewText,
-              email: this.$store.state.currentUser.email,
-              username: this.$store.state.currentUser.name
+      if(this.reviewData.reviewText.length < 10) {
+        alert("리뷰 내용을 20자 이상 입력해주세요.")
+      }else{
+        try{
+          const response = await axios.post(
+            `https://gosurveasy.co.kr/review/${this.id}`,
+              {
+                grade: this.reviewData.score,
+                content: this.reviewData.reviewText,
+                email: this.$store.state.currentUser.email,
+                username: this.$store.state.currentUser.name
+              }
+          )
+          
+          if(response.status == 200){
+            this.$router.push("/mypage/review/post/done")
+            const db = getFirestore()
+            const userEmail = this.$store.state.currentUser.email
+            const docSnap = await getDoc(doc(db, "userData", userEmail.toString()))
+            if(docSnap.exists()){
+              const data = docSnap.data()
+              const now = data.point_current
+              const docref = doc(db, "userData", userEmail.toString())
+              await updateDoc(docref, { 
+                  point_current: now+500,
+              })
             }
-        )
-        this.$router.push("/mypage/review/post/done")
-        const db = getFirestore()
-        const userEmail = this.$store.state.currentUser.email
-        const docSnap = await getDoc(doc(db, "userData", userEmail.toString()))
-        if(docSnap.exists()){
-            const data = docSnap.data()
-            const now = data.point_current
-            const total = data.point_total
-            const docref = doc(db, "userData", userEmail.toString())
-            await updateDoc(docref, { 
-                point_current: now+500,
-                point_total: total+500
-            })
+          }
+          
+        }catch(error){
+          
+          if(error.response.data.status == 409) {
+            alert("작성이 완료된 리뷰가 존재합니다.")
+          }else{
+            alert("문제가 발생했습니다. 다시 시도해주세요.")
+          }
         }
-      }catch(error){
-        console.log(error)
       }
+      
     }
   },
 }
