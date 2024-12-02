@@ -285,6 +285,10 @@ export default {
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
+            font-size : 14px;
+            width: 800px; 
+            height: 800px;
+            margin-top:100px;
         }
         h1 {
             text-align: center; 
@@ -300,6 +304,7 @@ export default {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
+            table-layout: fixed;
         }
         th, td {
             border: 1px solid #ddd;
@@ -387,16 +392,18 @@ export default {
 
       html2canvas(hiddenDiv, {
         useCORS: true,
+        scale: 2, // 캡처 배율 고정
+        width: 800, // 캡처할 영역의 고정 너비
+        height : 800
       }).then((canvas) => {
         const imgData = canvas.toDataURL('image/png');
-
         const link = document.createElement('a');
         link.href = imgData;
-        link.download = `${item.title}_영수증.png`;
+        link.download = `설문 의뢰 영수증_${this.$store.state.currentUser.name}님.png`;
         link.click();
 
         document.body.removeChild(hiddenDiv);
-      })
+      });
       
     },
     
