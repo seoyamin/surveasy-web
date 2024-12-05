@@ -132,7 +132,7 @@ export default {
   data() {
     return {
       headCountText: this.$store.state.tables.priceTextTable[0],
-      headCountArr :[0, 30, 40, 50, 60, 70, 80, 90, 100, 120, 140, 160, 180, 200],
+      headCountArr :[0, 30, 40, 50, 60, 70, 80, 90, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300],
       timeTextMap: {
         "TIME" : "", "TIME_0" : "1분 이내", "TIME_1_3" : "1-3분", "TIME_4_6" : "4-6분", "TIME_7_10" : "7-10분", "TIME_11_15" : "11-15분", "TIME_16_20" : "16-20분"
       },

@@ -35,7 +35,7 @@ export function setInterceptors(instance) {
       //     return Promise.reject(error)
       //   }
       //   try {
-      //     const response = await axios.post("https://surveasy.store/user/reissue",{
+      //     const response = await axios.post("https://gosurveasy.co.kr/user/reissue",{
       //       refreshToken : refreshToken
       //     })
       //     if(response.status == 200){
